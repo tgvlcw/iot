@@ -1,9 +1,14 @@
 new Vue({
     el: '#app',
     data: {
-        devices: initialDevices
+        devices: initialDevices,
+        currentPage: 'about', // Default page
+		navItems: initialNavItems
     },
     methods: {
+        setPage(page) {
+            this.currentPage = page;
+        },
         fetchDevices() {
             axios.get('/api/devices')
                 .then(response => {
@@ -29,9 +34,8 @@ new Vue({
         }
     },
     mounted() {
-        // Fetch devices when the component is mounted
         this.fetchDevices();
-        // Set up an interval to periodically fetch device status
         setInterval(this.fetchDevices, 5000); // Fetch every 5 seconds
     }
 });
+
