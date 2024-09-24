@@ -1,0 +1,25 @@
+.nav-link {
+    font-size: 1.5em;
+}
+.nav-link.active {
+    background-color: #007bff; /* Bootstrap primary color */
+    color: white; /* Text color */
+}
+.sidebar-title {
+    margin-left: 2ch; 
+    margin-top: 1ch; 
+    font-size: 2em; 
+}
+.nav-item {
+    margin-top: 2ch; 
+    margin-left: 4ch;
+}
+.mb-4 {
+    margin-top: 2ch;
+    margin-left: 2ch;
+}
+.about-content {
+    margin-left: 8ch;
+    margin-top: 8ch;
+}
+
