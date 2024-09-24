@@ -17,9 +17,20 @@
                     <div class="card-body">
                         <h5 class="card-title">{{ '{{ device.name }}' }}</h5>
                         <p class="card-text">Status: {{ '{{ device.status }}' }}</p>
-                        <button @click="toggleDevice(device.id)" class="btn btn-primary">
-                            {{ '{{ getButtonText(device.status) }}' }}
-                        </button>
+                        <div class="btn-group" role="group">
+                            <button @click="toggleDevice(device.id, 'ON')" 
+                                    class="btn" 
+                                    :class="{'btn-primary': device.status !== 'ON', 'btn-secondary': device.status === 'ON'}" 
+                                    :disabled="device.status === 'ON'">
+                                ON
+                            </button>
+                            <button @click="toggleDevice(device.id, 'OFF')" 
+                                    class="btn" 
+                                    :class="{'btn-primary': device.status !== 'OFF', 'btn-secondary': device.status === 'OFF'}" 
+                                    :disabled="device.status === 'OFF'">
+                                OFF
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>

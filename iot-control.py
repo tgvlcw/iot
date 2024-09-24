@@ -15,13 +15,12 @@ devices = [
 def toggle_device():
     data = request.json
     device_id = data.get('deviceId')
-
-    device = next((d for d in devices if d['id'] == device_id), None)
-    if device:
-        device['status'] = 'ON' if device['status'] == 'OFF' else 'OFF'
-        return jsonify(success=True)
-
-    return jsonify(success=False, message='Device not found'), 404
+    new_status = data.get('status')
+    for device in devices:
+        if device['id'] == device_id:
+            device['status'] = new_status
+            return jsonify({'success': True})
+    return jsonify({'success': False}), 404
 
 @app.route('/api/devices', methods=['GET'])
 def get_devices():
