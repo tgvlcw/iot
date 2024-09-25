@@ -1,25 +1,52 @@
 .nav-link {
-    font-size: 1.5em;
-}
-.nav-link.active {
-    background-color: #007bff; /* Bootstrap primary color */
-    color: white; /* Text color */
-}
-.sidebar-title {
-    margin-left: 2ch; 
-    margin-top: 1ch; 
-    font-size: 2em; 
-}
-.nav-item {
-    margin-top: 2ch; 
-    margin-left: 4ch;
-}
-.mb-4 {
-    margin-top: 2ch;
-    margin-left: 2ch;
-}
-.about-content {
-    margin-left: 8ch;
-    margin-top: 8ch;
+    font-size: 1.3em;
+    padding: 10px 15px;
+    transition: background-color 0.3s, color 0.3s;
 }
 
+.nav-link.active {
+    background-color: #007bff;
+    color: white;
+}
+
+.sidebar-title {
+    margin: 30px 0 20px 20px;
+    font-size: 2em;
+    color: #333;
+}
+
+.nav-item {
+    margin: 10px 10px;
+}
+
+main {
+    padding-top: 40px;
+}
+
+.main-title {
+    padding-left: 30px; 
+    margin-bottom: 30px;
+}
+
+.card {
+    margin-bottom: 20px;
+}
+
+.about-content {
+    margin-top: 40px;
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        margin-bottom: 20px;
+    }
+    
+    .nav-item {
+        margin: 5px 0;
+    }
+    
+    .sidebar-title {
+        margin: 15px 0 15px 10px;
+        font-size: 1.3em;
+    }
+}

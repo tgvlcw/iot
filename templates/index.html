@@ -17,54 +17,17 @@
                     <h5 class="sidebar-title">Navigation</h5>
                     <ul class="nav flex-column">
 						<li class="nav-item" v-for="item in navItems" :key="item.name">
-							<a :class="['nav-link', { active: currentPage === item.page }]" href="#" @click.prevent="setPage(item.page)">{{ '{{ item.name }}' }}</a>
+							<a :class="['nav-link', { active: currentPage === item.page }]" href="#" @click.prevent="setPage(item.page)">
+								{{ '{{ item.name }}' }}
+							</a>
                         </li>
                     </ul>
                 </div>
             </nav>
 
             <main class="col-md-9 ms-sm-auto col-lg-10 px-4">
-                <h1 class="mb-4">IoT Device Control</h1>
-
-                <div v-if="currentPage === 'devices'">
-                    <div class="row">
-                        <div class="col-md-6" v-for="device in devices" :key="device.id">
-                            <div class="card mb-4">
-                                <div class="card-body">
-									<h5 class="card-title">{{ '{{ device.name }}' }}</h5>
-									<p class="card-text">Status: {{ '{{ device.status }}' }}</p>
-                                    <div class="btn-group" role="group">
-                                        <button @click="toggleDevice(device.id, 'ON')"
-                                                class="btn"
-                                                :class="{'btn-primary': device.status !== 'ON', 'btn-secondary': device.status === 'ON'}"
-                                                :disabled="device.status === 'ON'">
-                                            ON
-                                        </button>
-                                        <button @click="toggleDevice(device.id, 'OFF')"
-                                                class="btn"
-                                                :class="{'btn-primary': device.status !== 'OFF', 'btn-secondary': device.status === 'OFF'}"
-                                                :disabled="device.status === 'OFF'">
-                                            OFF
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div v-if="currentPage === 'video'">
-                    <p>This page is currently empty.</p>
-                </div>
-
-                <div v-if="currentPage === 'info'">
-                    <p>This page is currently empty.</p>
-                </div>
-
-                <div v-if="currentPage === 'about'" class="about-content">
-                    <h2>About</h2>
-                    <p>Software Version: 1.0.0</p>
-                </div>
+                <h1 class="main-title">IoT Device Control</h1>
+				<component :is="currentPageComponent" :devices="devices" @toggle-device="toggleDevice"></component>
             </main>
         </div>
     </div>
