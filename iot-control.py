@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, jsonify
+import hardware
 
 app = Flask(__name__)
 
@@ -13,17 +14,13 @@ def operate_device(device_name, new_status):
     for device in devices:
         if device['name'] == device_name:
             if device_name == 'Light':
-                device['status'] = new_status
-                return True
+                return hardware.do_light(device, new_status)
             elif device_name == 'Fan':
-                device['status'] = new_status
-                return True
+                return hardware.do_fan(device, new_status)
             elif device_name == 'TV':
-                device['status'] = new_status
-                return True
+                return hardware.do_tv(device, new_status)
             elif device_name == 'Sound':
-                device['status'] = new_status
-                return True
+                return hardware.do_sound(device, new_status)
 
     return False
 
