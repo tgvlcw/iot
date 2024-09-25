@@ -86,7 +86,7 @@ new Vue({
         toggleDevice(deviceId, targetStatus) {
             const device = this.devices.find(d => d.id === deviceId);
             if (device && device.status !== targetStatus) {
-                axios.post('/api/toggle-device', { deviceId: deviceId, status: targetStatus })
+                axios.post('/api/toggle-device', { deviceName: device.name, status: targetStatus })
                     .then(response => {
                         if (response.data.success) {
                             this.fetchDevices(); // Fetch the latest status from the server

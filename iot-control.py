@@ -5,21 +5,37 @@ app = Flask(__name__)
 devices = [
     {'id': 1, 'name': 'Light', 'status': 'OFF'},
     {'id': 2, 'name': 'Fan', 'status': 'ON'},
-    {'id': 3, 'name': 'AC', 'status': 'OFF'},
-    {'id': 4, 'name': 'TV', 'status': 'ON'},
-    {'id': 5, 'name': 'Charger', 'status': 'OFF'},
-    {'id': 6, 'name': 'Sound', 'status': 'OFF'}
+    {'id': 3, 'name': 'TV', 'status': 'ON'},
+    {'id': 4, 'name': 'Sound', 'status': 'OFF'}
 ]
+
+def operate_device(device_name, new_status):
+    for device in devices:
+        if device['name'] == device_name:
+            if device_name == 'Light':
+                device['status'] = new_status
+                return True
+            elif device_name == 'Fan':
+                device['status'] = new_status
+                return True
+            elif device_name == 'TV':
+                device['status'] = new_status
+                return True
+            elif device_name == 'Sound':
+                device['status'] = new_status
+                return True
+
+    return False
 
 @app.route('/api/toggle-device', methods=['POST'])
 def toggle_device():
     data = request.json
-    device_id = data.get('deviceId')
+    device_name = data.get('deviceName')
     new_status = data.get('status')
-    for device in devices:
-        if device['id'] == device_id:
-            device['status'] = new_status
-            return jsonify({'success': True})
+    #print("Data:", data)
+    if operate_device(device_name, new_status):
+        return jsonify({'success': True})
+
     return jsonify({'success': False}), 404
 
 @app.route('/api/devices', methods=['GET'])
