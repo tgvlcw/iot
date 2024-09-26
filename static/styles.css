@@ -36,6 +36,20 @@ main {
     margin-top: 40px;
 }
 
+.form-range {
+    width: 100px;
+}
+
+.btn-group .btn.rounded-circle {
+    width: 40px;
+    height: 40px;
+    padding: 6px 0;
+    border-radius: 50%;
+    text-align: center;
+    font-size: 12px;
+    line-height: 1.42857;
+}
+
 @media (max-width: 768px) {
     .sidebar {
         margin-bottom: 20px;
