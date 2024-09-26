@@ -36,26 +36,49 @@ main {
     width: 100px;
 }
 
-.flex-grow-1 { 
-    padding-left: 350px; 
-    padding-top: 10px; 
+.slide-btn { 
+    position: relative;
+    left: 350px; 
+    top: -30px; 
 }
 
-.ms-4 { 
-    padding-left: 200px; 
-    padding-top: 10px; 
+.fan-control { 
+    position: relative;
+    left: 300px;
+    top: -40px; 
 }
 
-.mt-3 { 
-    padding-left: 100px; 
+.tv-control {
+    position: relative;
+    left: 150px; 
+    top: -110px;
 }
 
-.d-flex1 { 
-    padding-left: 161px; 
+.card {
+    width: 550px;  
+    height: 160px;
+    padding-left: 10px;
 }
 
-.d-flex2 { 
-    padding-left: 100px; 
+.tv-btn {
+    transition: all 0.1s ease;
+}
+
+.spd-btn:active:not(:disabled),
+.tv-btn:active:not(:disabled) {
+    transform: scale(0.95);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) inset;
+    opacity: 0.7;
+}
+
+.btn-outline-primary:active:not(:disabled) {
+    background-color: hsl(216, 58%, 51%);
+    color: hsl(216, 98%, 32%);
+}
+
+.btn-group1 {
+    display: flex;
+    gap: 25px; 
 }
 
 .btn.rounded-circle {
