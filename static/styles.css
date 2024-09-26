@@ -28,10 +28,6 @@ main {
     margin-bottom: 30px;
 }
 
-.card {
-    margin-bottom: 20px;
-}
-
 .about-content {
     margin-top: 40px;
 }
@@ -40,7 +36,29 @@ main {
     width: 100px;
 }
 
-.btn-group .btn.rounded-circle {
+.flex-grow-1 { 
+    padding-left: 350px; 
+    padding-top: 10px; 
+}
+
+.ms-4 { 
+    padding-left: 200px; 
+    padding-top: 10px; 
+}
+
+.mt-3 { 
+    padding-left: 100px; 
+}
+
+.d-flex1 { 
+    padding-left: 161px; 
+}
+
+.d-flex2 { 
+    padding-left: 100px; 
+}
+
+.btn.rounded-circle {
     width: 40px;
     height: 40px;
     padding: 6px 0;
@@ -63,4 +81,13 @@ main {
         margin: 15px 0 15px 10px;
         font-size: 1.3em;
     }
+}
+
+*:focus {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+*:focus-visible {
+    outline: 2px solid #007bff !important;
 }

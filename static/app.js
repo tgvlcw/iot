@@ -7,7 +7,7 @@ const DevicesPage = {
                         <div class="card-body">
                             <h5 class="card-title">{{ device.name }}</h5>
                             <p class="card-text">Status: {{ device.status }}</p>
-                            <div class="d-flex align-items-center">
+                            <div class="d-flex align-items-center mb-2">
                                 <div class="btn-group" role="group">
                                     <button @click="toggleDevice(device.id, 'ON')"
                                             class="btn"
@@ -24,43 +24,60 @@ const DevicesPage = {
                                 </div>
                                 
                                 <!-- Light Control -->
-                                <div v-if="device.name === 'Light' && device.status === 'ON'" class="ms-3">
-                                    <input type="range" class="form-range" min="0" max="100" v-model="device.brightness" @change="updateBrightness(device.id, device.brightness)">
+                                <div v-if="device.name === 'Light'" class="ms-3 flex-grow-1">
+                                    <input type="range" class="form-range" min="0" max="100" 
+                                           v-model="device.brightness" 
+                                           @change="updateBrightness(device.id, device.brightness)"
+                                           :disabled="device.status === 'OFF'">
                                 </div>
                                 
                                 <!-- Fan Control -->
-                                <div v-if="device.name === 'Fan' && device.status === 'ON'" class="ms-3">
+                                <div v-if="device.name === 'Fan'" class="ms-4">
                                     <div class="btn-group" role="group">
                                         <button v-for="speed in [1, 2, 3]" :key="speed"
                                                 @click="setFanSpeed(device.id, speed)"
                                                 class="btn btn-outline-primary rounded-circle me-1"
-                                                :class="{ active: device.speed === speed }">
+                                                :class="{ active: device.speed === speed }"
+                                                :disabled="device.status === 'OFF'">
                                             {{ speed }}
                                         </button>
                                     </div>
                                 </div>
                                 
-                                <!-- Sound Control -->
-                                <div v-if="device.name === 'Sound' && device.status === 'ON'" class="ms-3">
-                                    <input type="range" class="form-range" min="0" max="100" v-model="device.volume" @change="updateVolume(device.id, device.volume)">
-                                </div>
-                            </div>
-                            
-                            <!-- TV Control -->
-                            <div v-if="device.name === 'TV' && device.status === 'ON'" class="mt-3">
-                                <div class="d-flex justify-content-center">
-                                    <button @click="tvControl(device.id, 'up')" class="btn btn-outline-secondary">↑</button>
-                                </div>
-                                <div class="d-flex justify-content-center align-items-center my-2">
-                                    <button @click="tvControl(device.id, 'left')" class="btn btn-outline-secondary me-2">←</button>
-                                    <button @click="tvControl(device.id, 'ok')" class="btn btn-outline-primary">OK</button>
-                                    <button @click="tvControl(device.id, 'right')" class="btn btn-outline-secondary ms-2">→</button>
-                                </div>
-                                <div class="d-flex justify-content-center">
-                                    <button @click="tvControl(device.id, 'down')" class="btn btn-outline-secondary">↓</button>
-                                </div>
-                            </div>
-                        </div>
+								<!-- Sound Control -->
+								<div v-if="device.name === 'Sound'" class="ms-3 flex-grow-1">
+									<input type="range" class="form-range" min="0" max="100" 
+										   v-model="device.volume" 
+										   @change="updateVolume(device.id, device.volume)"
+										   :disabled="device.status === 'OFF'">
+								</div>
+
+								<!-- TV Control -->
+								<div v-if="device.name === 'TV'" class="mt-3">
+									<div class="d-flex1">
+										<button @click="tvControl(device.id, 'up')"
+											class="btn btn-outline-secondary"
+											:disabled="device.status === 'OFF'">↑</button>
+									</div>
+									<div class="d-flex2 my-2">
+										<button @click="tvControl(device.id, 'left')"
+											class="btn btn-outline-secondary me-2"
+											:disabled="device.status === 'OFF'">←</button>
+										<button @click="tvControl(device.id, 'ok')"
+											class="btn btn-outline-primary"
+											:disabled="device.status === 'OFF'">OK</button>
+										<button @click="tvControl(device.id, 'right')"
+											class="btn btn-outline-secondary ms-2"
+											:disabled="device.status === 'OFF'">→</button>
+									</div>
+									<div class="d-flex1">
+										<button @click="tvControl(device.id, 'down')"
+											class="btn btn-outline-secondary"
+											:disabled="device.status === 'OFF'">↓</button>
+									</div>
+								</div>
+							</div>
+						</div>
                     </div>
                 </div>
             </div>
