@@ -1,45 +1,20 @@
-const TVControl = {
-    template: `
-        <div class="tv-control">
-            <div class="d-flex justify-content-center">
-                <button @click="control('up')" class="btn btn-outline-primary tv-btn" :disabled="disabled">↑</button>
-            </div>
-            <div class="d-flex justify-content-center my-2">
-                <button @click="control('left')" class="btn btn-outline-primary tv-btn me-2" :disabled="disabled">←</button>
-                <button @click="control('ok')" class="btn btn-outline-primary tv-btn" :disabled="disabled">OK</button>
-                <button @click="control('right')" class="btn btn-outline-primary tv-btn ms-2" :disabled="disabled">→</button>
-            </div>
-            <div class="d-flex justify-content-center">
-                <button @click="control('down')" class="btn btn-outline-primary tv-btn" :disabled="disabled">↓</button>
-            </div>
-        </div>
-    `,
-    props: {
-        deviceId: {
-            type: Number,
-            required: true
-        },
-        disabled: {
-            type: Boolean,
-            default: false
-        }
-    },
-    methods: {
-        control(action) {
-            this.$emit('tv-control', this.deviceId, action);
-        }
-    }
-};
-
 const DevicesPage = {
     components: {
-		'tv-control': TVControl
+		'tv-control': TVControl,
+		'light-control': LightControl,
+		'fan-control': FanControl,
+		'sound-control': SoundControl
+    },
+    provide() {
+        return {
+            fetchDevices: this.fetchDevices 
+        };
     },
     template: `
         <div>
             <div class="row">
-                <div class="col-md-6" v-for="device in devices" :key="device.id">
-                    <div class="card mb-4">
+				<div class="cards d-flex flex-wrap">
+    				<div class="card m-2" v-for="device in devices" :key="device.id">
                         <div class="card-body">
                             <h5 class="card-title">{{ device.name }}</h5>
                             <p class="card-text">Status: {{ device.status }}</p>
@@ -59,45 +34,38 @@ const DevicesPage = {
                                     </button>
                                 </div>
 
-                                <!-- Light Control -->
-                                <div v-if="device.name === 'Light'" class="ms-4 slide-btn">
-                                    <input type="range" class="form-range" min="0" max="100"
-                                           v-model="device.brightness"
-                                           @change="updateBrightness(device.id, device.brightness)"
-                                           :disabled="device.status === 'OFF'">
-                                </div>
+                                <!-- Light Control Component -->
+                                <light-control
+                                    v-if="device.name === 'Light'"
+                                    :device-id="device.id"
+                                    :brightness="device.brightness"
+                                    :disabled="device.status === 'OFF'"
+                                ></light-control>
 
-                                <!-- Fan Control -->
-                                <div v-if="device.name === 'Fan'" class="ms-4 fan-control">
-                                    <div class="btn-group1" role="group">
-                                        <button v-for="speed in [1, 2, 3]" :key="speed"
-                                                @click="setFanSpeed(device.id, speed)"
-                                                class="btn btn-outline-primary rounded-circle spd-btn"
-                                                :class="{ active: device.speed === speed }"
-                                                :disabled="device.status === 'OFF'">
-                                            {{ speed }}
-                                        </button>
-                                    </div>
-                                </div>
+                                <!-- Fan Control Component -->
+                                <fan-control
+                                    v-if="device.name === 'Fan'"
+                                    :device-id="device.id"
+                                    :current-speed="device.speed"
+                                    :disabled="device.status === 'OFF'"
+                                ></fan-control>
 
                             	<!-- TV Control Component -->
                             	<tv-control 
                                 	v-if="device.name === 'TV'"
                                 	:device-id="device.id"
                                 	:disabled="device.status === 'OFF'"
-                                	@tv-control="tvControl"
                                 	class="mb-3"
                             	></tv-control> 
 
-                                <!-- Sound Control -->
-                                <div v-if="device.name === 'Sound'" class="ms-4 slide-btn">
-                                    <input type="range" class="form-range" min="0" max="100"
-                                           v-model="device.volume"
-                                           @change="updateVolume(device.id, device.volume)"
-                                           :disabled="device.status === 'OFF'">
-                                </div>
+                                <!-- Sound Control Component -->
+                                <sound-control
+                                    v-if="device.name === 'Sound'"
+                                    :device-id="device.id"
+                                    :volume="device.volume"
+                                    :disabled="device.status === 'OFF'"
+                                ></sound-control>
                             </div>
-
                         </div>
                     </div>
                 </div>
@@ -120,50 +88,6 @@ const DevicesPage = {
                     });
             }
         },
-		updateBrightness(deviceId, brightness) {
-			axios.post('/api/update-brightness', { deviceId, brightness })
-				.then(response => {
-					if (response.data.success) {
-						this.fetchDevices(); 
-					}
-				})
-				.catch(error => {
-					console.error('Error updating brightness:', error);
-				});
-		},
-		setFanSpeed(deviceId, speed) {
-			axios.post('/api/set-fan-speed', { deviceId, speed })
-				.then(response => {
-					if (response.data.success) {
-						this.fetchDevices(); 
-					}
-				})
-				.catch(error => {
-					console.error('Error setting fan speed:', error);
-				});
-		},
-		updateVolume(deviceId, volume) {
-			axios.post('/api/update-volume', { deviceId, volume })
-				.then(response => {
-					if (response.data.success) {
-						this.fetchDevices(); 
-					}
-				})
-				.catch(error => {
-					console.error('Error updating volume:', error);
-				});
-		},
-		tvControl(deviceId, action) {
-			axios.post('/api/tv-control', { deviceId, action })
-				.then(response => {
-					if (response.data.success) {
-						this.fetchDevices(); 
-					}
-				})
-				.catch(error => {
-					console.error('Error controlling TV:', error);
-				});
-		}
     }
 };
 
@@ -194,8 +118,13 @@ new Vue({
     },
     data: {
         devices: initialDevices,
-        currentPage: 'devices', // Default page
-		navItems: initialNavItems
+        navItems: [
+            { name: 'Devices', page: 'devices' },
+            { name: 'Video', page: 'video' },
+            { name: 'Info', page: 'info' },
+            { name: 'About', page: 'about' }
+        ],
+        currentPage: 'devices' 
     },
     computed: {
         currentPageComponent() {

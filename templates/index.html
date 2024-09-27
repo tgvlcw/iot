@@ -17,9 +17,9 @@
                     <h5 class="sidebar-title">Navigation</h5>
                     <ul class="nav flex-column">
 						<li class="nav-item" v-for="item in navItems" :key="item.name">
-							<a :class="['nav-link', { active: currentPage === item.page }]" href="#" @click.prevent="setPage(item.page)">
-								{{ '{{ item.name }}' }}
-							</a>
+                			<a :class="['nav-link', { active: currentPage === item.page }]" href="#" @click.prevent="setPage(item.page)">
+								{{' {{ item.name }} '}} 
+                			</a>
                         </li>
                     </ul>
                 </div>
@@ -37,13 +37,8 @@
 
     <script>
         var initialDevices = {{ devices|tojson|safe }};
-		var initialNavItems = [
-            { name: 'Devices', page: 'devices' },
-            { name: 'Video', page: 'video' },
-            { name: 'Info', page: 'info' },
-            { name: 'About', page: 'about' }
-        ];
     </script>
+	<script src="{{ url_for('static', filename='controls.js') }}"></script>
     <script src="{{ url_for('static', filename='app.js') }}"></script>
 </body>
 </html>

@@ -38,7 +38,7 @@ main {
 
 .slide-btn { 
     position: relative;
-    left: 300px; 
+    padding-left: 300px; 
     top: -30px; 
 }
 
@@ -55,8 +55,8 @@ main {
 }
 
 .card {
-    width: 500px;  
     height: 160px;
+    flex: 0 0 calc(40%); 
 }
 
 .tv-btn {
