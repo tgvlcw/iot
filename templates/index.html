@@ -27,7 +27,10 @@
 
             <main class="col-md-9 ms-sm-auto col-lg-10 px-4">
                 <h1 class="main-title">IoT Device Control</h1>
-				<component :is="currentPageComponent" :devices="devices" @toggle-device="toggleDevice"></component>
+				<component :is="currentPageComponent"
+					:devices="devices"
+					:fetch-devices="fetchDevices">
+				</component>
             </main>
         </div>
     </div>

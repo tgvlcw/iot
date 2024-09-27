@@ -104,23 +104,66 @@ const DevicesPage = {
             </div>
         </div>
     `,
-    props: ['devices'],
+    props: ['devices', 'fetchDevices'],
     methods: {
         toggleDevice(deviceId, targetStatus) {
-            this.$emit('toggle-device', deviceId, targetStatus);
+            const device = this.devices.find(d => d.id === deviceId);
+            if (device && device.status !== targetStatus) {
+                axios.post('/api/toggle-device', { deviceName: device.name, status: targetStatus })
+                    .then(response => {
+                        if (response.data.success) {
+                            this.fetchDevices(); // Fetch the latest status from the server
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error toggling device:', error);
+                    });
+            }
         },
-        updateBrightness(deviceId, brightness) {
-            this.$emit('update-brightness', deviceId, brightness);
-        },
-        setFanSpeed(deviceId, speed) {
-            this.$emit('set-fan-speed', deviceId, speed);
-        },
-        updateVolume(deviceId, volume) {
-            this.$emit('update-volume', deviceId, volume);
-        },
-        tvControl(deviceId, action) {
-            this.$emit('tv-control', deviceId, action);
-        }
+		updateBrightness(deviceId, brightness) {
+			axios.post('/api/update-brightness', { deviceId, brightness })
+				.then(response => {
+					if (response.data.success) {
+						this.fetchDevices(); 
+					}
+				})
+				.catch(error => {
+					console.error('Error updating brightness:', error);
+				});
+		},
+		setFanSpeed(deviceId, speed) {
+			axios.post('/api/set-fan-speed', { deviceId, speed })
+				.then(response => {
+					if (response.data.success) {
+						this.fetchDevices(); 
+					}
+				})
+				.catch(error => {
+					console.error('Error setting fan speed:', error);
+				});
+		},
+		updateVolume(deviceId, volume) {
+			axios.post('/api/update-volume', { deviceId, volume })
+				.then(response => {
+					if (response.data.success) {
+						this.fetchDevices(); 
+					}
+				})
+				.catch(error => {
+					console.error('Error updating volume:', error);
+				});
+		},
+		tvControl(deviceId, action) {
+			axios.post('/api/tv-control', { deviceId, action })
+				.then(response => {
+					if (response.data.success) {
+						this.fetchDevices(); 
+					}
+				})
+				.catch(error => {
+					console.error('Error controlling TV:', error);
+				});
+		}
     }
 };
 
@@ -171,69 +214,11 @@ new Vue({
                 .catch(error => {
                     console.error('Error fetching devices:', error);
                 });
-        },
-        toggleDevice(deviceId, targetStatus) {
-            const device = this.devices.find(d => d.id === deviceId);
-            if (device && device.status !== targetStatus) {
-                axios.post('/api/toggle-device', { deviceName: device.name, status: targetStatus })
-                    .then(response => {
-                        if (response.data.success) {
-                            this.fetchDevices(); // Fetch the latest status from the server
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error toggling device:', error);
-                    });
-            }
         }
     },
     mounted() {
         this.fetchDevices();
         setInterval(this.fetchDevices, 5000); // Fetch every 5 seconds
-	},
-	updateBrightness(deviceId, brightness) {
-		axios.post('/api/update-brightness', { deviceId, brightness })
-			.then(response => {
-				if (response.data.success) {
-					this.fetchDevices(); 
-				}
-			})
-			.catch(error => {
-				console.error('Error updating brightness:', error);
-			});
-	},
-	setFanSpeed(deviceId, speed) {
-		axios.post('/api/set-fan-speed', { deviceId, speed })
-			.then(response => {
-				if (response.data.success) {
-					this.fetchDevices(); 
-				}
-			})
-			.catch(error => {
-				console.error('Error setting fan speed:', error);
-			});
-	},
-	updateVolume(deviceId, volume) {
-		axios.post('/api/update-volume', { deviceId, volume })
-			.then(response => {
-				if (response.data.success) {
-					this.fetchDevices(); 
-				}
-			})
-			.catch(error => {
-				console.error('Error updating volume:', error);
-			});
-	},
-	tvControl(deviceId, action) {
-		axios.post('/api/tv-control', { deviceId, action })
-			.then(response => {
-				if (response.data.success) {
-					this.fetchDevices(); 
-				}
-			})
-			.catch(error => {
-				console.error('Error controlling TV:', error);
-			});
 	}
 });
 

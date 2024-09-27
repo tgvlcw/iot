@@ -38,13 +38,13 @@ main {
 
 .slide-btn { 
     position: relative;
-    left: 350px; 
+    left: 300px; 
     top: -30px; 
 }
 
 .fan-control { 
     position: relative;
-    left: 300px;
+    left: 250px;
     top: -40px; 
 }
 
@@ -55,9 +55,8 @@ main {
 }
 
 .card {
-    width: 550px;  
+    width: 500px;  
     height: 160px;
-    padding-left: 10px;
 }
 
 .tv-btn {
