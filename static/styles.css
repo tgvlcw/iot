@@ -37,8 +37,10 @@ main {
 }
 
 .slide-btn { 
+    width: 100px;
+    height: 20px;
     position: relative;
-    padding-left: 300px; 
+    left: 320px; 
     top: -30px; 
 }
 
@@ -49,18 +51,21 @@ main {
 }
 
 .tv-control {
+    width: 150px;
+    height: 120px;
     position: relative;
-    left: 150px; 
+    left: 320px; 
     top: -110px;
+    transition: all 0.1s ease;
+}
+
+.cards {
+    display: flex;
+    flex-wrap: wrap;
 }
 
 .card {
-    height: 160px;
-    flex: 0 0 calc(40%); 
-}
-
-.tv-btn {
-    transition: all 0.1s ease;
+    height: 150px;
 }
 
 .spd-btn:active:not(:disabled),
