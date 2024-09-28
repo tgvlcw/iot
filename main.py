@@ -11,10 +11,10 @@ devices = [
 ]
 
 dev_func = [
-    {'name': 'Light', 'opt': hd.do_light, 'dev_st': hd.light_status},
-    {'name': 'Fan', 'opt': hd.do_fan, 'dev_st': hd.fan_status},
-    {'name': 'TV', 'opt': hd.do_tv, 'dev_st': hd.tv_status},
-    {'name': 'Sound', 'opt': hd.do_sound, 'dev_st': hd.sound_status},
+    {'name': 'Light', 'opt': hd.do_device, 'dev_st': hd.light_status},
+    {'name': 'Fan', 'opt': hd.do_device, 'dev_st': hd.fan_status},
+    {'name': 'TV', 'opt': hd.do_device, 'dev_st': hd.tv_status},
+    {'name': 'Sound', 'opt': hd.do_device, 'dev_st': hd.sound_status},
 ]
 
 def change_status(device_name, new_status):
@@ -24,7 +24,7 @@ def change_status(device_name, new_status):
 
     for i in range(len(dev_func)):
         if device_name == dev_func[i]['name']:
-                return dev_func[i]['opt'](devices[i], new_status)
+                return dev_func[i]['opt'](devices[i], 'change', new_status)
 
     return False
 
@@ -39,10 +39,16 @@ def get_status():
     return True
 
 @app.route('/api/control-device', methods=['POST'])
-def update_volume():
+def control_device():
     data = request.json
     print("Data:", data)
-    return jsonify({'success': True})
+    device_name = data.get('deviceName')
+    new_status = data.get('status')
+
+    if do_control_device(device_name, new_status):
+        return jsonify({'success': True})
+
+    return jsonify({'success': False}), 404
 
 @app.route('/api/toggle-device', methods=['POST'])
 def toggle_device():

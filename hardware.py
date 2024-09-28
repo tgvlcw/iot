@@ -15,26 +15,9 @@ def sound_status(device):
     device['status'] = 'ON'
     device['volume'] = 30
 
-def do_light(device, status):
-    send_msg(status, device['name'])
-    device['status'] = status
-    print(device)
-    return True
-
-def do_fan(device, status):
-    send_msg(status, device['name'])
-    device['status'] = status
-    print(device)
-    return True
-
-def do_tv(device, status):
-    send_msg(status, device['name'])
-    device['status'] = status
-    print(device)
-    return True
-
-def do_sound(device, status):
-    send_msg(status, device['name'])
-    device['status'] = status
+def do_device(device, opt, value):
+    if opt == 'change':
+        send_msg(value, device['name'])
+        device['status'] = value
     print(device)
     return True
