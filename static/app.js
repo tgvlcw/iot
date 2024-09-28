@@ -38,7 +38,7 @@ const DevicesPage = {
                                 <light-control
                                     v-if="device.name === 'Light'"
                                     :deviceName="device.name"
-                                    :brightness="device.brightness"
+                                    :brightness="device.value"
                                     :disabled="device.status === 'OFF'"
                                 ></light-control>
 
@@ -46,7 +46,7 @@ const DevicesPage = {
                                 <fan-control
                                     v-if="device.name === 'Fan'"
                                     :deviceName="device.name"
-                                    :current-speed="device.speed"
+                                    :current-speed="device.value"
                                     :disabled="device.status === 'OFF'"
                                 ></fan-control>
 
@@ -62,7 +62,7 @@ const DevicesPage = {
                                 <sound-control
                                     v-if="device.name === 'Sound'"
                                     :deviceName="device.name"
-                                    :volume="device.volume"
+                                    :volume="device.value"
                                     :disabled="device.status === 'OFF'"
                                 ></sound-control>
                             </div>
@@ -76,8 +76,13 @@ const DevicesPage = {
     methods: {
         toggleDevice(deviceId, targetStatus) {
             const device = this.devices.find(d => d.id === deviceId);
+			const payload = {
+				deviceName: device.name,
+				opt: 'change',
+				status: targetStatus
+			};
             if (device && device.status !== targetStatus) {
-                axios.post('/api/toggle-device', { deviceName: device.name, status: targetStatus })
+				axios.post('/api/toggle-device', payload)
                     .then(response => {
                         if (response.data.success) {
                             this.fetchDevices(); // Fetch the latest status from the server

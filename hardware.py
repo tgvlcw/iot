@@ -15,9 +15,6 @@ def sound_status(device):
     device['status'] = 'ON'
     device['volume'] = 30
 
-def do_device(device, opt, value):
-    if opt == 'change':
-        send_msg(value, device['name'])
-        device['status'] = value
-    print(device)
+def do_device(device_name, opt, value):
+    send_msg(device_name, opt, value)
     return True

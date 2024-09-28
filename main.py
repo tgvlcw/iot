@@ -4,27 +4,33 @@ import hardware as hd
 app = Flask(__name__)
 
 devices = [
-    {'id': 1, 'name': 'Light', 'status': '', 'brightness': 0},
-    {'id': 2, 'name': 'Fan', 'status': '', 'speed': 0},
-    {'id': 3, 'name': 'TV', 'status': ''},
-    {'id': 4, 'name': 'Sound', 'status': '', 'volume': 0}
+    {'id': 1, 'name': 'Light', 'status': '', 'value': 0},
+    {'id': 2, 'name': 'Fan', 'status': '', 'value': 0},
+    {'id': 3, 'name': 'TV', 'status': '', 'value': 0},
+    {'id': 4, 'name': 'Sound', 'status': '', 'value': 0}
 ]
 
 dev_func = [
-    {'name': 'Light', 'opt': hd.do_device, 'dev_st': hd.light_status},
-    {'name': 'Fan', 'opt': hd.do_device, 'dev_st': hd.fan_status},
-    {'name': 'TV', 'opt': hd.do_device, 'dev_st': hd.tv_status},
-    {'name': 'Sound', 'opt': hd.do_device, 'dev_st': hd.sound_status},
+    {'name': 'Light', 'set': hd.do_device, 'dev_st': hd.light_status},
+    {'name': 'Fan', 'set': hd.do_device, 'dev_st': hd.fan_status},
+    {'name': 'TV', 'set': hd.do_device, 'dev_st': hd.tv_status},
+    {'name': 'Sound', 'set': hd.do_device, 'dev_st': hd.sound_status},
 ]
 
-def change_status(device_name, new_status):
+def change_status(data):
     if len(devices) != len(dev_func):
         print("Error: The length of devices and dev_func lists do not match.")
         return False
 
+    print("Data:", data)
+    data = request.json
+    device_name = data.get('deviceName')
+    opt = data.get('opt')
+    new_status = data.get('status')
     for i in range(len(dev_func)):
         if device_name == dev_func[i]['name']:
-                return dev_func[i]['opt'](devices[i], 'change', new_status)
+                devices[i]['status'] = new_status
+                return dev_func[i]['set'](device_name, opt, new_status)
 
     return False
 
@@ -40,23 +46,27 @@ def get_status():
 
 @app.route('/api/control-device', methods=['POST'])
 def control_device():
+    if len(devices) != len(dev_func):
+        print("Error: The length of devices and dev_func lists do not match.")
+        return jsonify({'success': False}), 404
+
     data = request.json
-    print("Data:", data)
+    print("Control Data:", data)
     device_name = data.get('deviceName')
-    new_status = data.get('status')
+    opt = data.get('opt')
+    value = data.get('value')
+    for i in range(len(dev_func)):
+        if device_name == dev_func[i]['name']:
+            devices[i]['value'] = value
+            dev_func[i]['set'](device_name, opt, value)
+            break
 
-    if do_control_device(device_name, new_status):
-        return jsonify({'success': True})
-
-    return jsonify({'success': False}), 404
+    return jsonify({'success': True})
 
 @app.route('/api/toggle-device', methods=['POST'])
 def toggle_device():
     data = request.json
-    device_name = data.get('deviceName')
-    new_status = data.get('status')
-    #print("Data:", data)
-    if change_status(device_name, new_status):
+    if change_status(data):
         return jsonify({'success': True})
 
     return jsonify({'success': False}), 404
