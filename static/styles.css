@@ -59,13 +59,11 @@ main {
     transition: all 0.1s ease;
 }
 
-.cards {
-    display: flex;
-    flex-wrap: wrap;
-}
-
 .card {
+    width: 100%;
     height: 150px;
+    max-width: 500px;
+    margin: 0 auto;
 }
 
 .spd-btn:active:not(:disabled),
@@ -95,7 +93,11 @@ main {
     line-height: 1.42857;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1200px) {
+    .card {
+        max-width: 100%;
+    }
+
     .sidebar {
         margin-bottom: 20px;
     }

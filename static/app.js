@@ -13,8 +13,8 @@ const DevicesPage = {
     template: `
         <div>
             <div class="row">
-				<div class="cards d-flex flex-wrap">
-    				<div class="card m-2" v-for="device in devices" :key="device.id" style="flex: 0 0 calc(45% - 4rem);">
+				<div class="col-xl-6 col-lg-6 col-md-12 mb-4" v-for="device in devices" :key="device.id">
+					<div class="card">
                         <div class="card-body">
                             <h5 class="card-title">{{ device.name }}</h5>
                             <p class="card-text">Status: {{ device.status }}</p>
