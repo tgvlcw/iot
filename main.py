@@ -38,6 +38,12 @@ def get_status():
 
     return True
 
+@app.route('/api/control-device', methods=['POST'])
+def update_volume():
+    data = request.json
+    print("Data:", data)
+    return jsonify({'success': True})
+
 @app.route('/api/toggle-device', methods=['POST'])
 def toggle_device():
     data = request.json

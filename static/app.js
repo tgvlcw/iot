@@ -37,7 +37,7 @@ const DevicesPage = {
                                 <!-- Light Control Component -->
                                 <light-control
                                     v-if="device.name === 'Light'"
-                                    :device-id="device.id"
+                                    :deviceName="device.name"
                                     :brightness="device.brightness"
                                     :disabled="device.status === 'OFF'"
                                 ></light-control>
@@ -45,7 +45,7 @@ const DevicesPage = {
                                 <!-- Fan Control Component -->
                                 <fan-control
                                     v-if="device.name === 'Fan'"
-                                    :device-id="device.id"
+                                    :deviceName="device.name"
                                     :current-speed="device.speed"
                                     :disabled="device.status === 'OFF'"
                                 ></fan-control>
@@ -53,7 +53,7 @@ const DevicesPage = {
                             	<!-- TV Control Component -->
                             	<tv-control 
                                 	v-if="device.name === 'TV'"
-                                	:device-id="device.id"
+                                	:deviceName="device.name"
                                 	:disabled="device.status === 'OFF'"
                                 	class="mb-3"
                             	></tv-control> 
@@ -61,7 +61,7 @@ const DevicesPage = {
                                 <!-- Sound Control Component -->
                                 <sound-control
                                     v-if="device.name === 'Sound'"
-                                    :device-id="device.id"
+                                    :deviceName="device.name"
                                     :volume="device.volume"
                                     :disabled="device.status === 'OFF'"
                                 ></sound-control>

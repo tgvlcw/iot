@@ -8,7 +8,7 @@ const LightControl = {
         </div>
     `,
     props: {
-        deviceId: {
+        deviceName: {
             type: Number,
             required: true
         },
@@ -24,7 +24,12 @@ const LightControl = {
     inject: ['fetchDevices'],
     methods: {
         updateBrightness() {
-            axios.post('/api/update-brightness', { deviceId: this.deviceId, brightness: this.brightness })
+			const payload = {
+				deviceName: this.deviceName,
+				opt: 'brightness',
+				value: this.brightness
+			};
+			axios.post('/api/control-device', payload)
                 .then(response => {
                     if (response.data.success) {
                         this.fetchDevices();
@@ -54,7 +59,7 @@ const TVControl = {
         </div>
     `,
     props: {
-        deviceId: {
+        deviceName: {
             type: Number,
             required: true
         },
@@ -66,7 +71,12 @@ const TVControl = {
     inject: ['fetchDevices'],
     methods: {
         control(action) {
-            axios.post('/api/tv-control', { deviceId: this.deviceId, action })
+			const payload = {
+				deviceName: this.deviceName,
+				opt: 'event',
+				value: action
+			};
+			axios.post('/api/control-device', payload)
                 .then(response => {
                     if (response.data.success) {
                         this.fetchDevices();
@@ -94,7 +104,7 @@ const FanControl = {
         </div>
     `,
     props: {
-        deviceId: {
+        deviceName: {
             type: Number,
             required: true
         },
@@ -110,7 +120,12 @@ const FanControl = {
     inject: ['fetchDevices'],
     methods: {
         setFanSpeed(speed) {
-            axios.post('/api/set-fan-speed', { deviceId: this.deviceId, speed })
+			const payload = {
+				deviceName: this.deviceName,
+				opt: 'speed',
+				value: speed
+			};
+			axios.post('/api/control-device', payload)
                 .then(response => {
                     if (response.data.success) {
                         this.fetchDevices();
@@ -133,7 +148,7 @@ const SoundControl = {
         </div>
     `,
     props: {
-        deviceId: {
+        deviceName: {
             type: Number,
             required: true
         },
@@ -147,9 +162,14 @@ const SoundControl = {
         }
     },
     inject: ['fetchDevices'],
-    methods: {
-        updateVolume() {
-            axios.post('/api/update-volume', { deviceId: this.deviceId, volume: this.volume })
+	methods: {
+		updateVolume() {
+			const payload = {
+				deviceName: this.deviceName,
+				opt: 'volume',
+				value: this.volume
+			};
+			axios.post('/api/control-device', payload)
                 .then(response => {
                     if (response.data.success) {
                         this.fetchDevices();
