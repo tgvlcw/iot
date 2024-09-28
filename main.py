@@ -4,38 +4,38 @@ import hardware as hd
 app = Flask(__name__)
 
 devices = [
-    {'id': 1, 'name': 'Light', 'status': None, 'brightness': None},
-    {'id': 2, 'name': 'Fan', 'status': None, 'speed': None},
-    {'id': 3, 'name': 'TV', 'status': None},
-    {'id': 4, 'name': 'Sound', 'status': None, 'volume': None}
+    {'id': 1, 'name': 'Light', 'status': '', 'brightness': 0},
+    {'id': 2, 'name': 'Fan', 'status': '', 'speed': 0},
+    {'id': 3, 'name': 'TV', 'status': ''},
+    {'id': 4, 'name': 'Sound', 'status': '', 'volume': 0}
 ]
 
-def init_device(device_name, new_status):
-    for device in devices:
-        if device['name'] == device_name:
-            if device_name == 'Light':
-                return hd.do_light(device, new_status)
-            elif device_name == 'Fan':
-                return hd.do_fan(device, new_status)
-            elif device_name == 'TV':
-                return hd.do_tv(device, new_status)
-            elif device_name == 'Sound':
-                return hd.do_sound(device, new_status)
+dev_func = [
+    {'name': 'Light', 'opt': hd.do_light, 'dev_st': hd.light_status},
+    {'name': 'Fan', 'opt': hd.do_fan, 'dev_st': hd.fan_status},
+    {'name': 'TV', 'opt': hd.do_tv, 'dev_st': hd.tv_status},
+    {'name': 'Sound', 'opt': hd.do_sound, 'dev_st': hd.sound_status},
+]
+
+def change_status(device_name, new_status):
+    if len(devices) != len(dev_func):
+        print("Error: The length of devices and dev_func lists do not match.")
+        return False
+
+    for i in range(len(dev_func)):
+        if device_name == dev_func[i]['name']:
+                return dev_func[i]['opt'](devices[i], new_status)
 
     return False
 
 def get_status():
-    for device in devices:
-        if device['name'] == 'Light':
-            hd.light_status(device)
-        elif device['name'] == 'Fan':
-            hd.fan_status(device)
-        elif device['name'] == 'TV':
-            hd.tv_status(device)
-        elif device['name'] == 'Sound':
-            hd.sound_status(device)
+    if len(devices) != len(dev_func):
+        print("Error: The length of devices and dev_func lists do not match.")
+        return False
 
-    print(devices)
+    for i in range(len(devices)):
+        dev_func[i]['dev_st'](devices[i])
+
     return True
 
 @app.route('/api/toggle-device', methods=['POST'])
@@ -44,7 +44,7 @@ def toggle_device():
     device_name = data.get('deviceName')
     new_status = data.get('status')
     #print("Data:", data)
-    if init_device(device_name, new_status):
+    if change_status(device_name, new_status):
         return jsonify({'success': True})
 
     return jsonify({'success': False}), 404
