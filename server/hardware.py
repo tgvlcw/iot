@@ -1,4 +1,4 @@
-from mqtt_conf import send_msg
+from mqtt_server import send_msg
 
 def light_status(device):
     device['status'] = 'ON'
