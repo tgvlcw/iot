@@ -44,13 +44,11 @@ def get_status():
 
     return True
 
-@app.route('/api/control-device', methods=['POST'])
-def control_device():
+def operate_device(data):
     if len(devices) != len(dev_func):
         print("Error: The length of devices and dev_func lists do not match.")
-        return jsonify({'success': False}), 404
+        return False
 
-    data = request.json
     print("Control Data:", data)
     device_name = data.get('deviceName')
     opt = data.get('opt')
@@ -58,10 +56,17 @@ def control_device():
     for i in range(len(dev_func)):
         if device_name == dev_func[i]['name']:
             devices[i]['value'] = value
-            dev_func[i]['set'](device_name, opt, value)
-            break
+            return dev_func[i]['set'](device_name, opt, value)
 
-    return jsonify({'success': True})
+    return False
+
+@app.route('/api/control-device', methods=['POST'])
+def control_device():
+    data = request.json
+    if operate_device(data):
+        return jsonify({'success': True})
+
+    return jsonify({'success': False}), 404
 
 @app.route('/api/toggle-device', methods=['POST'])
 def toggle_device():
