@@ -33,11 +33,24 @@ def on_message(server, userdata, msg):
         return
 
     print(f"Received message: {msg.payload.decode()}, topic: {msg.topic}, flag: {sending_msg}")
+    handle_message(msg.payload.decode())
+
+def handle_message(message):
+    parsed_data = json.loads(message)
+    opt = parsed_data["opt"]
+    key = parsed_data["key"]
+    value = parsed_data["value"]
+
+    if opt == "set":
+        print(f"key: {key}, value: {value}")
+        feedback_event.set()
+    else:
+        print("Invalid operation type")
 
 def on_publish(client, userdata, mid):
     global sending_msg
     sending_msg = False
-    #print(f"Message with ID {mid} has been published.")
+    print(f"Message with ID {mid} has been published.")
 
 def send_msg(server, topic, message):
     global sending_msg
@@ -47,28 +60,48 @@ def send_msg(server, topic, message):
     server.publish(topic, message, qos=1)
 
 def recv_msg(server, topic, message):
+    global sending_msg
     send_msg(server, topic, message)
 
-    print(f"Sent message: {message}, waiting for feedback...")
+    print(f"Waiting for receive msg...")
     feedback_event.clear()
-    feedback_event.wait(timeout=5)
+    feedback_event.wait(timeout = 5)
 
-    if message in pending_messages:
+    if sending_msg:
         print("No feedback received for:", message)
     else:
         print("Feedback received successfully.")
 
-try:
-    server = init_server()
+def send_test():
     data = {
         "topic": "Light",
         "opt" : "set",
         "key": "brightness",
-        "value": 60
+        "value": 61
     }
+    send_msg(server, "Light", json.dumps(data))
+    data['value'] = 68
+    time.sleep(2)
+    send_msg(server, "Light", json.dumps(data))
+    data['value'] = 71
+    time.sleep(2)
+    send_msg(server, "Light", json.dumps(data))
+
+def recv_test():
+    data = {
+        "topic": "Light",
+        "opt" : "get",
+        "key": "brightness",
+        "value": None
+    }
+    recv_msg(server, "Light", json.dumps(data))
+
+try:
+    server = init_server()
 
     while True:
-        send_msg(server, "Light", json.dumps(data))
+        send_test()
+        recv_test()
         time.sleep(2)
 except KeyboardInterrupt:
     print("Server shutting down.")
