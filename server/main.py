@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, jsonify
+from mqtt_server import init_server
 import hardware as hd
 
 app = Flask(__name__)
@@ -91,5 +92,6 @@ def index():
     return render_template('index.html', devices=devices)
 
 if __name__ == '__main__':
+    init_server()
     app.run(host='0.0.0.0', port=8000, debug=True)
 
