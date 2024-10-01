@@ -5,10 +5,38 @@ import hardware as hd
 app = Flask(__name__)
 
 devices = [
-    {'id': 1, 'name': 'Light', 'status': '', 'value': 0},
-    {'id': 2, 'name': 'Fan', 'status': '', 'value': 0},
-    {'id': 3, 'name': 'TV', 'status': '', 'value': 0},
-    {'id': 4, 'name': 'Sound', 'status': '', 'value': 0}
+    {
+        'id': 1,
+        'name': 'Light',
+        'component': {
+            'switch': None,
+            'brightness': None,
+        },
+    },
+    {
+        'id': 2,
+        'name': 'Fan',
+        'component': {
+            'switch': None,
+            'speed': None,
+        },
+    },
+    {
+        'id': 3,
+        'name': 'TV',
+        'component': {
+            'switch': None,
+            'event': None,
+        },
+    },
+    {
+        'id': 4,
+        'name': 'Sound',
+        'component': {
+            'switch': None,
+            'volume': None,
+        },
+    }
 ]
 
 dev_func = [
@@ -29,7 +57,7 @@ def start_device(data):
     value = data.get('value')
     for i in range(len(dev_func)):
         if device == dev_func[i]['name']:
-            devices[i]['status'] = value
+            devices[i]['component']['switch'] = value
             msg = {
                 "topic": device,
                 "opt" : data.get('opt'),
@@ -64,14 +92,15 @@ def operate_device(data):
     print("Control Data:", data)
     device = data.get('deviceName')
     opt = data.get('opt')
+    key = data.get('key')
     value = data.get('value')
     for i in range(len(dev_func)):
         if device == dev_func[i]['name']:
-            devices[i]['value'] = value
+            devices[i]['component'][key] = value
             msg = {
                 "topic": device,
                 "opt" : data.get('opt'),
-                "key" : data.get('key'),
+                "key" : key,
                 "value": value
             }
             return dev_func[i]['set'](device, msg)

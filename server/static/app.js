@@ -17,19 +17,19 @@ const DevicesPage = {
 					<div class="card">
                         <div class="card-body">
                             <h5 class="card-title">{{ device.name }}</h5>
-                            <p class="card-text">Status: {{ device.status }}</p>
+                            <p class="card-text">Status: {{ device.component.switch }}</p>
                             <div class="on-btn mb-2">
                                 <div class="btn-group" role="group">
                                     <button @click="toggleDevice(device.id, 'ON')"
                                             class="btn"
-                                            :class="{'btn-primary': device.status !== 'ON', 'btn-secondary': device.status === 'ON'}"
-                                            :disabled="device.status === 'ON'">
+                                            :class="buttonOnClass(device)"
+                                            :disabled="device.component.switch === 'ON'">
                                         ON
                                     </button>
                                     <button @click="toggleDevice(device.id, 'OFF')"
                                             class="btn"
-                                            :class="{'btn-primary': device.status !== 'OFF', 'btn-secondary': device.status === 'OFF'}"
-                                            :disabled="device.status === 'OFF'">
+                                            :class="buttonOffClass(device)"
+                                            :disabled="device.component.switch === 'OFF'">
                                         OFF
                                     </button>
                                 </div>
@@ -38,23 +38,23 @@ const DevicesPage = {
                                 <light-control
                                     v-if="device.name === 'Light'"
                                     :deviceName="device.name"
-                                    :brightness="device.value"
-                                    :disabled="device.status === 'OFF'"
+                                    :brightness="device.component.brightness"
+                                    :disabled="device.component.switch === 'OFF'"
                                 ></light-control>
 
                                 <!-- Fan Control Component -->
                                 <fan-control
                                     v-if="device.name === 'Fan'"
                                     :deviceName="device.name"
-                                    :current-speed="device.value"
-                                    :disabled="device.status === 'OFF'"
+                                    :current-speed="device.component.speed"
+                                    :disabled="device.component.switch === 'OFF'"
                                 ></fan-control>
 
                             	<!-- TV Control Component -->
                             	<tv-control 
                                 	v-if="device.name === 'TV'"
                                 	:deviceName="device.name"
-                                	:disabled="device.status === 'OFF'"
+                                	:disabled="device.component.switch === 'OFF'"
                                 	class="mb-3"
                             	></tv-control> 
 
@@ -62,8 +62,8 @@ const DevicesPage = {
                                 <sound-control
                                     v-if="device.name === 'Sound'"
                                     :deviceName="device.name"
-                                    :volume="device.value"
-                                    :disabled="device.status === 'OFF'"
+                                    :volume="device.component.volume"
+                                    :disabled="device.component.switch === 'OFF'"
                                 ></sound-control>
                             </div>
                         </div>
@@ -74,6 +74,18 @@ const DevicesPage = {
     `,
     props: ['devices', 'fetchDevices'],
     methods: {
+        buttonOnClass(device) {
+            return {
+                'btn-primary': device.component.switch === 'OFF',
+                'btn-secondary': device.component.switch === 'ON'
+            }
+        },
+        buttonOffClass(device) {
+            return {
+                'btn-primary': device.component.switch === 'ON',
+                'btn-secondary': device.component.switch === 'OFF'
+            }
+        },
         toggleDevice(deviceId, targetStatus) {
             const device = this.devices.find(d => d.id === deviceId);
 			const payload = {
@@ -82,7 +94,7 @@ const DevicesPage = {
 				key: 'switch',
 				value: targetStatus
 			};
-            if (device && device.status !== targetStatus) {
+            if (device && device.component.switch !== targetStatus) {
 				axios.post('/api/toggle-device', payload)
                     .then(response => {
                         if (response.data.success) {

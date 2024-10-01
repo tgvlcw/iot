@@ -2,20 +2,20 @@ from mqtt_server import send_msg
 import json
 
 def light_status(device):
-    device['status'] = 'ON'
-    device['brightness'] = 80
+    device['component']['switch'] = 'ON'
+    device['component']['brightness'] = 80
     #recv_msg(device, json.dumps(data))
 
 def fan_status(device):
-    device['status'] = 'ON'
-    device['speed'] = 2
+    device['component']['switch'] = 'ON'
+    device['component']['speed'] = 2
 
 def tv_status(device):
-    device['status'] = 'ON'
+    device['component']['switch'] = 'ON'
 
 def sound_status(device):
-    device['status'] = 'ON'
-    device['volume'] = 30
+    device['component']['switch'] = 'ON'
+    device['component']['volume'] = 30
 
 def do_device(device, msg):
     send_msg(device, json.dumps(msg))
