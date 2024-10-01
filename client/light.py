@@ -2,7 +2,8 @@ import paho.mqtt.client as mqtt
 import time
 import json
 
-broker = "192.168.31.26"
+#broker = "192.168.31.26"
+broker = "127.0.0.1"
 port = 1883
 topic = "Light"
 ack = "ACK"
@@ -10,13 +11,9 @@ sending_msg = False
 
 device = {
     'name': 'Light',
-    'status': {
-        'name': 'switch',
-        'value': 'OFF'
-    },
-    'brightness': {
-        'name': 'brightness',
-        'value': 33
+    'component': {
+        'switch': 'OFF',
+        'brightness':  33
     }
 }
 
@@ -72,9 +69,9 @@ def send_msg(client, topic, message):
 def set_device(key, value):
     #print(f"Before device: {device}")
     if key == "switch":
-        device['status']['value'] = value
+        device['component']['switch'] = value
     elif key == "brightness":
-        device['brightness']['value'] = value
+        device['component']['brightness'] = value
 
     #print(f"After device: {device}")
 
@@ -82,8 +79,8 @@ def get_device(key):
     data = {
         "topic": topic,
         "opt": "set",
-        "key": "brightness",
-        "value": device['brightness']['value']
+        "key": key,
+        "value": device['component'][key]
     }
 
     send_msg(client, topic, json.dumps(data))

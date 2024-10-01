@@ -3,7 +3,8 @@ import time
 import threading
 import json
 
-broker = "192.168.31.26"
+#broker = "192.168.31.26"
+broker = "127.0.0.1"
 port = 1883
 topics = ["Light", "Fan", "TV", "Sound"]
 ack = ["ACK"]
@@ -42,7 +43,6 @@ def handle_message(message):
     value = parsed_data["value"]
 
     if opt == "set":
-        print(f"key: {key}, value: {value}")
         feedback_event.set()
     else:
         print("Invalid operation type")
@@ -72,7 +72,7 @@ def recv_msg(server, topic, message):
     else:
         print("Feedback received successfully.")
 
-def send_test():
+def send_test(server):
     data = {
         "topic": "Light",
         "opt" : "set",
@@ -87,7 +87,7 @@ def send_test():
     time.sleep(2)
     send_msg(server, "Light", json.dumps(data))
 
-def recv_test():
+def recv_test(server):
     data = {
         "topic": "Light",
         "opt" : "get",
@@ -100,8 +100,8 @@ try:
     server = init_server()
 
     while True:
-        send_test()
-        recv_test()
+        send_test(server)
+        recv_test(server)
         time.sleep(2)
 except KeyboardInterrupt:
     print("Server shutting down.")
