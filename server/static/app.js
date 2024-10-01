@@ -20,13 +20,13 @@ const DevicesPage = {
                             <p class="card-text">Status: {{ device.component.switch }}</p>
                             <div class="on-btn mb-2">
                                 <div class="btn-group" role="group">
-                                    <button @click="toggleDevice(device.id, 'ON')"
+                                    <button @click="toggleDevice(device, 'ON')"
                                             class="btn"
                                             :class="buttonOnClass(device)"
                                             :disabled="device.component.switch === 'ON'">
                                         ON
                                     </button>
-                                    <button @click="toggleDevice(device.id, 'OFF')"
+                                    <button @click="toggleDevice(device, 'OFF')"
                                             class="btn"
                                             :class="buttonOffClass(device)"
                                             :disabled="device.component.switch === 'OFF'">
@@ -86,15 +86,14 @@ const DevicesPage = {
                 'btn-secondary': device.component.switch === 'OFF'
             }
         },
-        toggleDevice(deviceId, targetStatus) {
-            const device = this.devices.find(d => d.id === deviceId);
+        toggleDevice(device, targetStatus) {
 			const payload = {
 				deviceName: device.name,
 				opt: 'set',
 				key: 'switch',
 				value: targetStatus
 			};
-            if (device && device.component.switch !== targetStatus) {
+            if (device.component.switch !== targetStatus) {
 				axios.post('/api/toggle-device', payload)
                     .then(response => {
                         if (response.data.success) {
