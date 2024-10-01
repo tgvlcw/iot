@@ -26,15 +26,15 @@ def start_device(data):
     print("Data:", data)
     data = request.json
     device = data.get('deviceName')
-    status = data.get('value')
+    value = data.get('value')
     for i in range(len(dev_func)):
         if device == dev_func[i]['name']:
-            devices[i]['status'] = status
+            devices[i]['status'] = value
             msg = {
                 "topic": device,
                 "opt" : data.get('opt'),
                 "key" : data.get('key'),
-                "value": status
+                "value": value
             }
             return dev_func[i]['set'](device, msg)
 
@@ -62,7 +62,13 @@ def operate_device(data):
     for i in range(len(dev_func)):
         if device == dev_func[i]['name']:
             devices[i]['value'] = value
-            return dev_func[i]['set'](device, opt, value)
+            msg = {
+                "topic": device,
+                "opt" : data.get('opt'),
+                "key" : data.get('key'),
+                "value": value
+            }
+            return dev_func[i]['set'](device, msg)
 
     return False
 

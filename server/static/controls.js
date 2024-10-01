@@ -26,7 +26,8 @@ const LightControl = {
         updateBrightness() {
 			const payload = {
 				deviceName: this.deviceName,
-				opt: 'brightness',
+				opt: 'set',
+				key: 'brightness',
 				value: this.brightness
 			};
 			axios.post('/api/control-device', payload)
@@ -73,7 +74,8 @@ const TVControl = {
         control(action) {
 			const payload = {
 				deviceName: this.deviceName,
-				opt: 'event',
+				opt: 'set',
+				key: 'event',
 				value: action
 			};
 			axios.post('/api/control-device', payload)
@@ -122,7 +124,8 @@ const FanControl = {
         setFanSpeed(speed) {
 			const payload = {
 				deviceName: this.deviceName,
-				opt: 'speed',
+				opt: 'set',
+				key: 'speed',
 				value: speed
 			};
 			axios.post('/api/control-device', payload)
@@ -166,7 +169,8 @@ const SoundControl = {
 		updateVolume() {
 			const payload = {
 				deviceName: this.deviceName,
-				opt: 'volume',
+				opt: 'set',
+				key: 'volume',
 				value: this.volume
 			};
 			axios.post('/api/control-device', payload)
