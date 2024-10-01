@@ -46,6 +46,12 @@ def get_status():
         return False
 
     for i in range(len(devices)):
+        data = {
+            "topic": devices[i]['name'],
+            "opt" : "get",
+            "key": "brightness",
+            "value": None
+        }
         dev_func[i]['dev_st'](devices[i])
 
     return True

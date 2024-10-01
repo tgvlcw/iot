@@ -4,6 +4,7 @@ import json
 def light_status(device):
     device['status'] = 'ON'
     device['brightness'] = 80
+    #recv_msg(device, json.dumps(data))
 
 def fan_status(device):
     device['status'] = 'ON'
