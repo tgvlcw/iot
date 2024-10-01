@@ -78,8 +78,9 @@ const DevicesPage = {
             const device = this.devices.find(d => d.id === deviceId);
 			const payload = {
 				deviceName: device.name,
-				opt: 'change',
-				status: targetStatus
+				opt: 'set',
+				key: 'switch',
+				value: targetStatus
 			};
             if (device && device.status !== targetStatus) {
 				axios.post('/api/toggle-device', payload)

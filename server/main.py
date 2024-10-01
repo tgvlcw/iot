@@ -17,20 +17,25 @@ dev_func = [
     {'name': 'Sound', 'set': hd.do_device, 'dev_st': hd.sound_status},
 ]
 
-def change_status(data):
+def start_device(data):
     if len(devices) != len(dev_func):
         print("Error: The length of devices and dev_func lists do not match.")
         return False
 
     print("Data:", data)
     data = request.json
-    device_name = data.get('deviceName')
-    opt = data.get('opt')
-    new_status = data.get('status')
+    device = data.get('deviceName')
+    status = data.get('value')
     for i in range(len(dev_func)):
-        if device_name == dev_func[i]['name']:
-                devices[i]['status'] = new_status
-                return dev_func[i]['set'](device_name, opt, new_status)
+        if device == dev_func[i]['name']:
+            devices[i]['status'] = status
+            msg = {
+                "topic": device,
+                "opt" : data.get('opt'),
+                "key" : data.get('key'),
+                "value": status
+            }
+            return dev_func[i]['set'](device, msg)
 
     return False
 
@@ -50,13 +55,13 @@ def operate_device(data):
         return False
 
     print("Control Data:", data)
-    device_name = data.get('deviceName')
+    device = data.get('deviceName')
     opt = data.get('opt')
     value = data.get('value')
     for i in range(len(dev_func)):
-        if device_name == dev_func[i]['name']:
+        if device == dev_func[i]['name']:
             devices[i]['value'] = value
-            return dev_func[i]['set'](device_name, opt, value)
+            return dev_func[i]['set'](device, opt, value)
 
     return False
 
@@ -71,7 +76,7 @@ def control_device():
 @app.route('/api/toggle-device', methods=['POST'])
 def toggle_device():
     data = request.json
-    if change_status(data):
+    if start_device(data):
         return jsonify({'success': True})
 
     return jsonify({'success': False}), 404

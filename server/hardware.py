@@ -1,4 +1,5 @@
 from mqtt_server import send_msg
+import json
 
 def light_status(device):
     device['status'] = 'ON'
@@ -15,6 +16,6 @@ def sound_status(device):
     device['status'] = 'ON'
     device['volume'] = 30
 
-def do_device(device_name, opt, value):
-    send_msg(device_name, opt, value)
+def do_device(device, msg):
+    send_msg(device, json.dumps(msg))
     return True
