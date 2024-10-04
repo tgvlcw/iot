@@ -1,0 +1,34 @@
+[
+    {
+        "id": 1,
+        "name": "Light",
+        "component": {
+            "switch": null,
+            "brightness": null
+        }
+    },
+    {
+        "id": 2,
+        "name": "Fan",
+        "component": {
+            "switch": null,
+            "speed": null
+        }
+    },
+    {
+        "id": 3,
+        "name": "TV",
+        "component": {
+            "switch": null,
+            "event": null
+        }
+    },
+    {
+        "id": 4,
+        "name": "Sound",
+        "component": {
+            "switch": null,
+            "volume": null
+        }
+    }
+]

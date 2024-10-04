@@ -64,7 +64,7 @@ def recv_msg(topic, msg):
         print("Feedback received successfully.")
 
 
-def init_server():
+def init_mqtt_server():
     global server
     server = mqtt.Client()
     server.on_connect = on_connect

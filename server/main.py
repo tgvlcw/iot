@@ -1,43 +1,11 @@
 from flask import Flask, render_template, request, jsonify
-from mqtt_server import init_server
+from mqtt_server import init_mqtt_server
 import hardware as hd
+import json
 
 app = Flask(__name__)
 
-devices = [
-    {
-        'id': 1,
-        'name': 'Light',
-        'component': {
-            'switch': None,
-            'brightness': None,
-        },
-    },
-    {
-        'id': 2,
-        'name': 'Fan',
-        'component': {
-            'switch': None,
-            'speed': None,
-        },
-    },
-    {
-        'id': 3,
-        'name': 'TV',
-        'component': {
-            'switch': None,
-            'event': None,
-        },
-    },
-    {
-        'id': 4,
-        'name': 'Sound',
-        'component': {
-            'switch': None,
-            'volume': None,
-        },
-    }
-]
+devices = None
 
 dev_func = [
     {'name': 'Light', 'set': hd.do_device, 'dev_st': hd.light_status},
@@ -106,6 +74,13 @@ def operate_device(data):
             return dev_func[i]['set'](device, msg)
 
     return False
+
+def init_server():
+    global devices
+    with open('devices.json', 'r') as file:
+        devices = json.load(file)
+
+    init_mqtt_server()
 
 @app.route('/api/control-device', methods=['POST'])
 def control_device():
