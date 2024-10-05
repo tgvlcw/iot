@@ -9,7 +9,7 @@ const LightControl = {
     `,
     props: {
         deviceName: {
-            type: Number,
+            type: String,
             required: true
         },
         brightness: {
@@ -61,7 +61,7 @@ const TVControl = {
     `,
     props: {
         deviceName: {
-            type: Number,
+            type: String,
             required: true
         },
         disabled: {
@@ -107,7 +107,7 @@ const FanControl = {
     `,
     props: {
         deviceName: {
-            type: Number,
+            type: String,
             required: true
         },
         currentSpeed: {
@@ -152,7 +152,7 @@ const SoundControl = {
     `,
     props: {
         deviceName: {
-            type: Number,
+            type: String,
             required: true
         },
         volume: {
