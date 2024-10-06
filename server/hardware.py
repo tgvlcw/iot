@@ -1,22 +1,36 @@
-from mqtt_server import send_msg
+from mqtt_server import send_msg, recv_msg
 import json
 
-def light_status(device):
-    device['component']['switch'] = 'ON'
-    device['component']['brightness'] = 80
-    #recv_msg(device, json.dumps(data))
+def light_status(device, msg):
+    data = {
+        "switch": "ON",
+        "brightness": 80
+    }
+    return recv_msg(device, json.dumps(msg))
 
-def fan_status(device):
-    device['component']['switch'] = 'ON'
-    device['component']['speed'] = 2
+def fan_status(device, msg):
+    data = {
+        "switch": "ON",
+        "speed": 2
+    }
 
-def tv_status(device):
-    device['component']['switch'] = 'ON'
+    #return recv_msg(device, json.dumps(msg))
+    return data
 
-def sound_status(device):
-    device['component']['switch'] = 'ON'
-    device['component']['volume'] = 30
+def tv_status(device, msg):
+    data = {
+        "switch": "ON",
+        "event": None,
+    }
+    return data
 
-def do_device(device, msg):
-    send_msg(device, json.dumps(msg))
+def sound_status(device, msg):
+    data = {
+        "switch": "ON",
+        "volume": 30
+    }
+    return data
+
+def do_device(topic, msg):
+    send_msg(topic, json.dumps(msg))
     return True

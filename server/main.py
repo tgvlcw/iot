@@ -19,20 +19,20 @@ def start_device(data):
         print("Error: The length of devices and dev_func lists do not match.")
         return False
 
-    print("Data:", data)
+    #print("Data:", data)
     data = request.json
-    device = data.get('deviceName')
+    topic = data.get('deviceName')
     value = data.get('value')
     for i in range(len(dev_func)):
-        if device == dev_func[i]['name']:
+        if topic == dev_func[i]['name']:
             devices[i]['component']['switch'] = value
             msg = {
-                "topic": device,
+                "topic": topic,
                 "opt" : data.get('opt'),
                 "key" : data.get('key'),
                 "value": value
             }
-            return dev_func[i]['set'](device, msg)
+            return dev_func[i]['set'](topic, msg)
 
     return False
 
@@ -42,13 +42,18 @@ def get_status():
         return False
 
     for i in range(len(devices)):
-        data = {
-            "topic": devices[i]['name'],
+        topic = devices[i]['name']
+        msg = {
+            "topic": topic,
             "opt" : "get",
-            "key": "brightness",
+            "key": "all",
             "value": None
         }
-        dev_func[i]['dev_st'](devices[i])
+
+        tmp = dev_func[i]['dev_st'](topic, msg)
+        if tmp != None:
+            devices[i]['component'] = tmp
+        #print(devices[i])
 
     return True
 
@@ -57,7 +62,7 @@ def operate_device(data):
         print("Error: The length of devices and dev_func lists do not match.")
         return False
 
-    print("Control Data:", data)
+    #print("Control Data:", data)
     device = data.get('deviceName')
     opt = data.get('opt')
     key = data.get('key')

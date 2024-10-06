@@ -3,23 +3,23 @@
         "id": 1,
         "name": "Light",
         "component": {
-            "switch": null,
-            "brightness": null
+            "switch": "OFF",
+            "brightness": 30
         }
     },
     {
         "id": 2,
         "name": "Fan",
         "component": {
-            "switch": null,
-            "speed": null
+            "switch": "OFF",
+            "speed": 1
         }
     },
     {
         "id": 3,
         "name": "TV",
         "component": {
-            "switch": null,
+            "switch": "OFF",
             "event": null
         }
     },
@@ -27,8 +27,8 @@
         "id": 4,
         "name": "Sound",
         "component": {
-            "switch": null,
-            "volume": null
+            "switch": "OFF",
+            "volume": 30
         }
     }
 ]
