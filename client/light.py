@@ -6,14 +6,14 @@ import json
 broker = "127.0.0.1"
 port = 1883
 topic = "Light"
-ack = "ACK"
 sending_msg = False
+client = None
 
 device = {
     'name': 'Light',
     'component': {
-        'switch': 'OFF',
-        'brightness':  33
+        'switch': 'ON',
+        'brightness':  43
     }
 }
 
@@ -29,7 +29,6 @@ def init_client():
 def on_connect(client, userdata, flags, rc):
     print("Client connected with result code:", rc)
     client.subscribe(topic)
-    client.subscribe(ack)
 
 def on_message(client, userdata, msg):
     global sending_msg
@@ -55,7 +54,7 @@ def handle_message(message):
         value = parsed_data["value"]
         set_device(key, value)
     elif opt == "get":
-        get_device(key)
+        read_status(key)
     else:
         print("Invalid operation type")
 
@@ -75,26 +74,26 @@ def set_device(key, value):
 
     #print(f"After device: {device}")
 
-def get_device(key):
-    data = {
+def read_status(key):
+    if key == "all":
+        data = device['component']
+    else:
+        data = device['component'][key]
+
+    msg = {
         "topic": topic,
         "opt": "set",
         "key": key,
-        "value": device['component'][key]
+        "data": data
     }
 
-    send_msg(client, topic, json.dumps(data))
+    send_msg(client, topic, json.dumps(msg))
 
-def send_feedback(message):
-    global sending_msg
-    sending_msg = True
-    print(f"ACK: {message}")
-    client.publish(ack, message, qos=1)
+if __name__ == '__main__':
+    client = init_client()
 
-client = init_client()
-
-try:
-    while True:
-        time.sleep(2)
-except KeyboardInterrupt:
-    print("Client shutting down.")
+    try:
+        while True:
+            time.sleep(2)
+    except KeyboardInterrupt:
+        print("Client shutting down.")
