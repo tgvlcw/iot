@@ -36,7 +36,7 @@ def start_device(data):
 
     return False
 
-def get_status():
+def read_device():
     if len(devices) != len(dev_func):
         print("Error: The length of devices and dev_func lists do not match.")
         return False
@@ -57,7 +57,7 @@ def get_status():
 
     return True
 
-def operate_device(data):
+def update_device(data):
     if len(devices) != len(dev_func):
         print("Error: The length of devices and dev_func lists do not match.")
         return False
@@ -90,7 +90,7 @@ def init_server():
 @app.route('/api/control-device', methods=['POST'])
 def control_device():
     data = request.json
-    if operate_device(data):
+    if update_device(data):
         return jsonify({'success': True})
 
     return jsonify({'success': False}), 404
@@ -109,7 +109,7 @@ def get_devices():
 
 @app.route('/')
 def index():
-    get_status()
+    read_device()
     return render_template('index.html', devices=devices)
 
 if __name__ == '__main__':
