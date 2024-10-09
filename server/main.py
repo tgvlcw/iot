@@ -112,7 +112,11 @@ def index():
     read_device()
     return render_template('index.html', devices=devices)
 
+def run_app():
+    app.run(host='0.0.0.0', port=8000, debug=False)
+
 if __name__ == '__main__':
     init_server()
-    app.run(host='0.0.0.0', port=8000, debug=True)
+    run_app()
+
 

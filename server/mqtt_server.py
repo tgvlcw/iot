@@ -15,15 +15,14 @@ recv_data = {
 }
 
 server = None
-feedback_event = threading.Event()
-sending = True
+sending = False
 
 def on_connect(server, userdata, flags, rc):
     print("Server connected with result code:", rc)
     for topic in topics:
         server.subscribe(topic)
 
-def on_publish(client, userdata, mid):
+def on_publish(server, userdata, mid):
     global sending
 
     sending = False
@@ -32,7 +31,7 @@ def on_publish(client, userdata, mid):
 def on_message(server, userdata, msg):
     global sending
 
-    if sending != False:
+    if sending == True:
         return
 
     print(f"Received msg: {msg.payload.decode()}, flag: {sending}")
@@ -42,11 +41,9 @@ def handle_message(message):
     msg = json.loads(message)
     opt = msg['opt']
     topic = msg['topic']
-    data = msg.get('data', None)
 
     if opt == "set":
-        recv_data[topic] = data
-        feedback_event.set()
+        recv_data[topic] = msg.get('data', None)
     else:
         print("Invalid operation type")
 
@@ -58,16 +55,6 @@ def send_msg(topic, msg):
     server.publish(topic, msg, qos=1)
 
 def recv_msg(topic, msg):
-    global sending
-    send_msg(topic, msg)
-
-    #print(f"Waiting for receive msg...")
-    feedback_event.clear()
-    feedback_event.wait(timeout = 2)
-
-    if sending:
-        print("No feedback received for:", msg)
-
     return recv_data[topic]
 
 def init_mqtt_server():
