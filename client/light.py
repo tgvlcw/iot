@@ -83,11 +83,18 @@ def read_status(key):
 
     send_msg(client, topic, json.dumps(msg))
 
+def loop_update():
+    status = device['component']['switch']
+
+    if status == 'ON':
+        read_status('all')
+
 if __name__ == '__main__':
     client = init_client()
 
     try:
         while True:
-            time.sleep(2)
+            loop_update()
+            time.sleep(5)
     except KeyboardInterrupt:
         print("Client shutting down.")
