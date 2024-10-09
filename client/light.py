@@ -66,13 +66,7 @@ def send_msg(client, topic, message):
     client.publish(topic, message, qos=1)
 
 def set_device(key, value):
-    #print(f"Before device: {device}")
-    if key == "switch":
-        device['component']['switch'] = value
-    elif key == "brightness":
-        device['component']['brightness'] = value
-
-    #print(f"After device: {device}")
+    device['component'][key] = value
 
 def read_status(key):
     if key == "all":
