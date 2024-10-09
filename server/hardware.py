@@ -2,7 +2,7 @@ from mqtt_server import send_msg, recv_msg
 import json
 
 def __read_device(topic, msg):
-    return recv_msg(device, json.dumps(msg))
+    return recv_msg(topic, json.dumps(msg))
 
 def __update_device(topic, msg):
     send_msg(topic, json.dumps(msg))

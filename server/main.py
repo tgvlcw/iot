@@ -8,10 +8,10 @@ app = Flask(__name__)
 devices = None
 
 dev_func = [
-    {'name': 'Light', 'set': hd.do_device, 'dev_st': hd.light_status},
-    {'name': 'Fan', 'set': hd.do_device, 'dev_st': hd.fan_status},
-    {'name': 'TV', 'set': hd.do_device, 'dev_st': hd.tv_status},
-    {'name': 'Sound', 'set': hd.do_device, 'dev_st': hd.sound_status},
+    {'name': 'Light', 'set': hd.__update_device, 'dev_st': hd.__read_device},
+    {'name': 'Fan', 'set': hd.__update_device, 'dev_st': hd.__read_device},
+    {'name': 'TV', 'set': hd.__update_device, 'dev_st': hd.__read_device},
+    {'name': 'Sound', 'set': hd.__update_device, 'dev_st': hd.__read_device},
 ]
 
 def start_device(data):
@@ -105,11 +105,11 @@ def toggle_device():
 
 @app.route('/api/devices', methods=['GET'])
 def get_devices():
+    read_device()
     return jsonify(devices)
 
 @app.route('/')
 def index():
-    read_device()
     return render_template('index.html', devices=devices)
 
 def run_app():
