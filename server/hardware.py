@@ -1,6 +1,13 @@
 from mqtt_server import send_msg, recv_msg
 import json
 
+def __read_device(topic, msg):
+    return recv_msg(device, json.dumps(msg))
+
+def __update_device(topic, msg):
+    send_msg(topic, json.dumps(msg))
+    return True
+
 def light_status(device, msg):
     data = {
         "switch": "ON",
