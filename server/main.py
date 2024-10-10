@@ -1,30 +1,19 @@
 from flask import Flask, render_template, request, jsonify
-from mqtt_server import init_mqtt_server
-import hardware as hd
+from mqtt_server import init_mqtt_server, send_msg, recv_msg
 import json
 
 app = Flask(__name__)
 
 devices = None
 
-dev_func = [
-    {'name': 'Light', 'set': hd.__update_device, 'dev_st': hd.__read_device},
-    {'name': 'Fan', 'set': hd.__update_device, 'dev_st': hd.__read_device},
-    {'name': 'TV', 'set': hd.__update_device, 'dev_st': hd.__read_device},
-    {'name': 'Sound', 'set': hd.__update_device, 'dev_st': hd.__read_device},
-]
-
 def start_device(data):
-    if len(devices) != len(dev_func):
-        print("Error: The length of devices and dev_func lists do not match.")
-        return False
-
-    #print("Data:", data)
     data = request.json
     topic = data.get('deviceName')
     value = data.get('value')
-    for i in range(len(dev_func)):
-        if topic == dev_func[i]['name']:
+    #print("Data:", data)
+
+    for i in range(len(devices)):
+        if topic == devices[i]['name']:
             devices[i]['component']['switch'] = value
             msg = {
                 "topic": topic,
@@ -32,15 +21,12 @@ def start_device(data):
                 "key" : data.get('key'),
                 "value": value
             }
-            return dev_func[i]['set'](topic, msg)
+            send_msg(topic, json.dumps(msg))
+            return True
 
     return False
 
 def read_device():
-    if len(devices) != len(dev_func):
-        print("Error: The length of devices and dev_func lists do not match.")
-        return False
-
     for i in range(len(devices)):
         topic = devices[i]['name']
         msg = {
@@ -50,7 +36,7 @@ def read_device():
             "value": None
         }
 
-        tmp = dev_func[i]['dev_st'](topic, msg)
+        tmp = recv_msg(topic, json.dumps(msg))
         if tmp != None:
             devices[i]['component'] = tmp
         #print(devices[i])
@@ -58,25 +44,23 @@ def read_device():
     return True
 
 def update_device(data):
-    if len(devices) != len(dev_func):
-        print("Error: The length of devices and dev_func lists do not match.")
-        return False
-
-    #print("Control Data:", data)
-    device = data.get('deviceName')
+    topic = data.get('deviceName')
     opt = data.get('opt')
     key = data.get('key')
     value = data.get('value')
-    for i in range(len(dev_func)):
-        if device == dev_func[i]['name']:
+    #print("Control Data:", data)
+
+    for i in range(len(devices)):
+        if topic == devices[i]['name']:
             devices[i]['component'][key] = value
             msg = {
-                "topic": device,
+                "topic": topic,
                 "opt" : data.get('opt'),
                 "key" : key,
                 "value": value
             }
-            return dev_func[i]['set'](device, msg)
+            send_msg(topic, json.dumps(msg))
+            return True
 
     return False
 
