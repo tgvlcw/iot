@@ -8,7 +8,7 @@ const LightControl = {
         </div>
     `,
     props: {
-        deviceName: {
+        device: {
             type: String,
             required: true
         },
@@ -25,7 +25,8 @@ const LightControl = {
     methods: {
         updateBrightness() {
 			const payload = {
-				deviceName: this.deviceName,
+				deviceName: this.device.name,
+                id: this.device.id,
 				opt: 'set',
 				key: 'brightness',
 				value: this.brightness
@@ -60,7 +61,7 @@ const TVControl = {
         </div>
     `,
     props: {
-        deviceName: {
+        device: {
             type: String,
             required: true
         },
@@ -73,7 +74,8 @@ const TVControl = {
     methods: {
         control(action) {
 			const payload = {
-				deviceName: this.deviceName,
+				deviceName: this.device.name,
+                id: this.device.id,
 				opt: 'set',
 				key: 'event',
 				value: action
@@ -106,7 +108,7 @@ const FanControl = {
         </div>
     `,
     props: {
-        deviceName: {
+        device: {
             type: String,
             required: true
         },
@@ -123,7 +125,8 @@ const FanControl = {
     methods: {
         setFanSpeed(speed) {
 			const payload = {
-				deviceName: this.deviceName,
+				deviceName: this.device.name,
+                id: this.device.id,
 				opt: 'set',
 				key: 'speed',
 				value: speed
@@ -151,7 +154,7 @@ const SoundControl = {
         </div>
     `,
     props: {
-        deviceName: {
+        device: {
             type: String,
             required: true
         },
@@ -168,7 +171,8 @@ const SoundControl = {
 	methods: {
 		updateVolume() {
 			const payload = {
-				deviceName: this.deviceName,
+				deviceName: this.device.name,
+                id: this.device.id,
 				opt: 'set',
 				key: 'volume',
 				value: this.volume

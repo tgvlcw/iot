@@ -37,7 +37,7 @@ const DevicesPage = {
                                 <!-- Light Control Component -->
                                 <light-control
                                     v-if="device.name === 'Light'"
-                                    :deviceName="device.name"
+                                    :device="device"
                                     :brightness="device.component.brightness"
                                     :disabled="device.component.switch === 'OFF'"
                                 ></light-control>
@@ -45,7 +45,7 @@ const DevicesPage = {
                                 <!-- Fan Control Component -->
                                 <fan-control
                                     v-if="device.name === 'Fan'"
-                                    :deviceName="device.name"
+                                    :device="device"
                                     :current-speed="device.component.speed"
                                     :disabled="device.component.switch === 'OFF'"
                                 ></fan-control>
@@ -53,7 +53,7 @@ const DevicesPage = {
                             	<!-- TV Control Component -->
                             	<tv-control 
                                 	v-if="device.name === 'TV'"
-                                	:deviceName="device.name"
+                                    :device="device"
                                 	:disabled="device.component.switch === 'OFF'"
                                 	class="mb-3"
                             	></tv-control> 
@@ -61,7 +61,7 @@ const DevicesPage = {
                                 <!-- Sound Control Component -->
                                 <sound-control
                                     v-if="device.name === 'Sound'"
-                                    :deviceName="device.name"
+                                    :device="device"
                                     :volume="device.component.volume"
                                     :disabled="device.component.switch === 'OFF'"
                                 ></sound-control>
@@ -89,6 +89,7 @@ const DevicesPage = {
         toggleDevice(device, targetStatus) {
 			const payload = {
 				deviceName: device.name,
+                id: device.id,
 				opt: 'set',
 				key: 'switch',
 				value: targetStatus

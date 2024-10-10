@@ -8,28 +8,6 @@ app = Flask(__name__)
 devices = None
 devices_locks = None
 
-def start_device(data):
-    data = request.json
-    topic = data.get('deviceName')
-    value = data.get('value')
-    #print("Data:", data)
-
-    lock = device_locks[topic]
-    with lock:
-        for device in devices:
-            if topic == device['name']:
-                msg = {
-                    "topic": topic,
-                    "opt" : data.get('opt'),
-                    "key" : data.get('key'),
-                    "value": value
-                }
-                send_msg(topic, json.dumps(msg))
-                device['component']['switch'] = value
-                break
-
-    return True
-
 def read_device():
     for device in devices:
         topic = device['name']
@@ -54,21 +32,20 @@ def update_device(data):
     opt = data.get('opt')
     key = data.get('key')
     value = data.get('value')
+    index = data.get('id')
     #print("Control Data:", data)
 
     lock = device_locks[topic]
     with lock:
-        for device in devices:
-            if topic == device['name']:
-                msg = {
-                    "topic": topic,
-                    "opt" : opt,
-                    "key" : key,
-                    "value": value
-                }
-                send_msg(topic, json.dumps(msg))
-                device['component'][key] = value
-                break
+        device = devices[index]
+        msg = {
+            "topic": topic,
+            "opt" : opt,
+            "key" : key,
+            "value": value
+        }
+        send_msg(topic, json.dumps(msg))
+        device['component'][key] = value
 
     return True
 
@@ -84,18 +61,15 @@ def init_server():
     device_locks = create_device_locks(devices)
     init_mqtt_server()
 
-@app.route('/api/control-device', methods=['POST'])
-def control_device():
-    data = request.json
-    if update_device(data):
-        return jsonify({'success': True})
-
-    return jsonify({'success': False}), 404
-
 @app.route('/api/toggle-device', methods=['POST'])
+@app.route('/api/control-device', methods=['POST'])
 def toggle_device():
     data = request.json
-    if start_device(data):
+
+    if not data or 'deviceName' not in data or 'id' not in data:
+        return jsonify({'success': False, 'error': 'Invalid input'}), 400
+
+    if update_device(data):
         return jsonify({'success': True})
 
     return jsonify({'success': False}), 404
@@ -115,5 +89,3 @@ def run_app():
 if __name__ == '__main__':
     init_server()
     run_app()
-
-
