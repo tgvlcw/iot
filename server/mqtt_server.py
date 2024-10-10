@@ -28,22 +28,23 @@ def on_publish(server, userdata, mid):
     sending = False
     #print(f"Message with ID {mid} has been published, flag: {sending}")
 
-def on_message(server, userdata, msg):
+def on_message(server, userdata, msg, devices_callback):
     global sending
 
     if sending == True:
         return
 
     print(f"Received msg: {msg.payload.decode()}, flag: {sending}")
-    handle_message(msg.payload.decode())
+    handle_message(msg.payload.decode(), devices_callback)
 
-def handle_message(message):
+def handle_message(message, callback):
     msg = json.loads(message)
     opt = msg['opt']
     topic = msg['topic']
 
     if opt == "set":
         recv_data[topic] = msg.get('data', None)
+        callback(topic, recv_data[topic])
     else:
         print("Invalid operation type")
 
@@ -57,12 +58,12 @@ def send_msg(topic, msg):
 def recv_msg(topic, msg):
     return recv_data[topic]
 
-def init_mqtt_server():
+def init_mqtt_server(devices_callback):
     global server
     server = mqtt.Client()
     server.on_connect = on_connect
     server.on_publish = on_publish
-    server.on_message = on_message
+    server.on_message = lambda client, userdata, msg: on_message(client, userdata, msg, devices_callback)
     server.connect(broker, port)
     server.loop_start()
 

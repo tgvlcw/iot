@@ -49,6 +49,19 @@ def update_device(data):
 
     return True
 
+def update_devices_callback(topic, data):
+    global devices
+
+    if data is None:
+        return
+
+    lock = device_locks[topic]
+    for device in devices:
+        if device['name'] == topic:
+            with lock:
+                device['component'] = data
+                break
+
 def create_device_locks(devices):
     return {device['name']: threading.Lock() for device in devices}
 
@@ -59,7 +72,7 @@ def init_server():
         devices = json.load(file)
 
     device_locks = create_device_locks(devices)
-    init_mqtt_server()
+    init_mqtt_server(update_devices_callback)
 
 @app.route('/api/toggle-device', methods=['POST'])
 @app.route('/api/control-device', methods=['POST'])
