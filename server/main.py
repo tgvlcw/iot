@@ -1,10 +1,12 @@
 from flask import Flask, render_template, request, jsonify
 from mqtt_server import init_mqtt_server, send_msg, recv_msg
 import json
+import threading
 
 app = Flask(__name__)
 
 devices = None
+devices_locks = None
 
 def start_device(data):
     data = request.json
@@ -12,23 +14,25 @@ def start_device(data):
     value = data.get('value')
     #print("Data:", data)
 
-    for i in range(len(devices)):
-        if topic == devices[i]['name']:
-            devices[i]['component']['switch'] = value
-            msg = {
-                "topic": topic,
-                "opt" : data.get('opt'),
-                "key" : data.get('key'),
-                "value": value
-            }
-            send_msg(topic, json.dumps(msg))
-            return True
+    lock = device_locks[topic]
+    with lock:
+        for device in devices:
+            if topic == device['name']:
+                msg = {
+                    "topic": topic,
+                    "opt" : data.get('opt'),
+                    "key" : data.get('key'),
+                    "value": value
+                }
+                send_msg(topic, json.dumps(msg))
+                device['component']['switch'] = value
+                break
 
-    return False
+    return True
 
 def read_device():
-    for i in range(len(devices)):
-        topic = devices[i]['name']
+    for device in devices:
+        topic = device['name']
         msg = {
             "topic": topic,
             "opt" : "get",
@@ -36,10 +40,12 @@ def read_device():
             "value": None
         }
 
-        tmp = recv_msg(topic, json.dumps(msg))
-        if tmp != None:
-            devices[i]['component'] = tmp
-        #print(devices[i])
+        lock = device_locks[topic]
+        with lock:
+            tmp = recv_msg(topic, json.dumps(msg))
+            if tmp != None:
+                device['component'] = tmp
+            #print(device)
 
     return True
 
@@ -50,25 +56,32 @@ def update_device(data):
     value = data.get('value')
     #print("Control Data:", data)
 
-    for i in range(len(devices)):
-        if topic == devices[i]['name']:
-            devices[i]['component'][key] = value
-            msg = {
-                "topic": topic,
-                "opt" : data.get('opt'),
-                "key" : key,
-                "value": value
-            }
-            send_msg(topic, json.dumps(msg))
-            return True
+    lock = device_locks[topic]
+    with lock:
+        for device in devices:
+            if topic == device['name']:
+                msg = {
+                    "topic": topic,
+                    "opt" : opt,
+                    "key" : key,
+                    "value": value
+                }
+                send_msg(topic, json.dumps(msg))
+                device['component'][key] = value
+                break
 
-    return False
+    return True
+
+def create_device_locks(devices):
+    return {device['name']: threading.Lock() for device in devices}
 
 def init_server():
     global devices
+    global device_locks
     with open('devices.json', 'r') as file:
         devices = json.load(file)
 
+    device_locks = create_device_locks(devices)
     init_mqtt_server()
 
 @app.route('/api/control-device', methods=['POST'])
@@ -89,11 +102,11 @@ def toggle_device():
 
 @app.route('/api/devices', methods=['GET'])
 def get_devices():
-    read_device()
     return jsonify(devices)
 
 @app.route('/')
 def index():
+    read_device()
     return render_template('index.html', devices=devices)
 
 def run_app():
