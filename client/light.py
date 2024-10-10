@@ -53,8 +53,6 @@ def handle_message(message):
     if opt == "set":
         value = parsed_data["value"]
         set_device(key, value)
-    elif opt == "get":
-        read_status(key)
     else:
         print("Invalid operation type")
 
