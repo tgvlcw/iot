@@ -1,20 +1,99 @@
 import paho.mqtt.client as mqtt
+import time
+import json
 
-broker = "192.168.31.26"
+#broker = "192.168.31.26"
+broker = "127.0.0.1"
 port = 1883
 topic = "Fan"
+sending_msg = False
+client = None
+
+device = {
+    'name': 'Fan',
+    'component': {
+        'switch': 'ON',
+        'speed':  2
+    }
+}
+
+def init_client():
+    client = mqtt.Client()
+    client.on_connect = on_connect
+    client.on_message = on_message
+    client.on_publish = on_publish
+    client.connect(broker, port)
+    client.loop_start()
+    return client
 
 def on_connect(client, userdata, flags, rc):
-    print("Connected with result code:", rc)
+    print("Client connected with result code:", rc)
     client.subscribe(topic)
 
 def on_message(client, userdata, msg):
-    print(f"Received message: {msg.payload.decode()} on topic: {msg.topic}")
+    global sending_msg
 
-client = mqtt.Client()
-client.on_connect = on_connect
-client.on_message = on_message
-client.connect(broker, port)
+    if sending_msg == True:
+        return
 
-client.loop_forever()
+    print(f"Received message: {msg.payload.decode()}, topic: {msg.topic}, flag: {sending_msg}")
 
+    handle_message(msg.payload.decode())
+
+def on_publish(client, userdata, mid):
+    global sending_msg
+    sending_msg = False
+    #print(f"Message with ID {mid} has been published.")
+
+def handle_message(message):
+    parsed_data = json.loads(message)
+    opt = parsed_data["opt"]
+    key = parsed_data["key"]
+
+    if opt == "set":
+        value = parsed_data["value"]
+        set_device(key, value)
+    else:
+        print("Invalid operation type")
+
+def send_msg(client, topic, message):
+    global sending_msg
+    sending_msg = True
+
+    print(f"Send message: {message}")
+    client.publish(topic, message, qos=1)
+
+def set_device(key, value):
+    #set fan speed
+    device['component'][key] = value
+
+def read_status(key):
+    if key == "all":
+        data = device['component']
+    else:
+        data = device['component'][key]
+
+    msg = {
+        "topic": topic,
+        "opt": "set",
+        "key": key,
+        "data": data
+    }
+
+    send_msg(client, topic, json.dumps(msg))
+
+def loop_update():
+    status = device['component']['switch']
+
+    if status == 'ON':
+        read_status('all')
+
+if __name__ == '__main__':
+    client = init_client()
+
+    try:
+        while True:
+            loop_update()
+            time.sleep(5)
+    except KeyboardInterrupt:
+        print("Client shutting down.")

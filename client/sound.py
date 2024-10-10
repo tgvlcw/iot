@@ -5,15 +5,15 @@ import json
 #broker = "192.168.31.26"
 broker = "127.0.0.1"
 port = 1883
-topic = "Light"
+topic = "Sound"
 sending_msg = False
 client = None
 
 device = {
-    'name': 'Light',
+    'name': 'Sound',
     'component': {
         'switch': 'ON',
-        'brightness':  43
+        'volume':  33
     }
 }
 
@@ -64,7 +64,7 @@ def send_msg(client, topic, message):
     client.publish(topic, message, qos=1)
 
 def set_device(key, value):
-    #set light brightness
+    #set sound volume
     device['component'][key] = value
 
 def read_status(key):
