@@ -6,7 +6,6 @@ import threading
 broker = "127.0.0.1"
 port = 1883
 topics = None
-recv_data = None
 server = None
 sending = False
 
@@ -32,12 +31,15 @@ def on_message(server, userdata, msg, devices_callback):
 
 def handle_message(message, callback):
     msg = json.loads(message)
+
+    if not msg or 'topic' not in msg or 'opt' not in msg:
+        print("Invalid msg type")
+        return
+
     opt = msg['opt']
     topic = msg['topic']
-
     if opt == "set":
-        recv_data[topic] = msg.get('data', None)
-        callback(topic, recv_data[topic])
+        callback(topic, msg.get('data', None))
     else:
         print("Invalid operation type")
 
@@ -48,17 +50,11 @@ def send_msg(topic, msg):
     print(f"Send msg: {msg}")
     server.publish(topic, msg, qos=1)
 
-def recv_msg(topic, msg):
-    return recv_data[topic]
-
 def init_mqtt_server(devices_callback, devices):
     global server
-    global recv_data
     global topics
 
-    recv_data = {device['name']: device['component'] for device in devices}
     topics = {device['name'] for device in devices}
-
     server = mqtt.Client()
     server.on_connect = on_connect
     server.on_publish = on_publish

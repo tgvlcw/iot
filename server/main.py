@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, jsonify
-from mqtt_server import init_mqtt_server, send_msg, recv_msg
+from mqtt_server import init_mqtt_server, send_msg
 import json
 import threading
 
@@ -7,25 +7,6 @@ app = Flask(__name__)
 
 devices = None
 devices_locks = None
-
-def read_device():
-    for device in devices:
-        topic = device['name']
-        msg = {
-            "topic": topic,
-            "opt" : "get",
-            "key": "all",
-            "value": None
-        }
-
-        lock = device_locks[topic]
-        with lock:
-            tmp = recv_msg(topic, json.dumps(msg))
-            if tmp != None:
-                device['component'] = tmp
-            #print(device)
-
-    return True
 
 def update_device(data):
     topic = data.get('deviceName')
@@ -53,6 +34,7 @@ def update_devices_callback(topic, data):
     global devices
 
     if data is None:
+        print("Data is null")
         return
 
     lock = device_locks[topic]
@@ -93,7 +75,6 @@ def get_devices():
 
 @app.route('/')
 def index():
-    #read_device()
     return render_template('index.html', devices=devices)
 
 def run_app():
