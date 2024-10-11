@@ -72,7 +72,7 @@ def init_server():
         devices = json.load(file)
 
     device_locks = create_device_locks(devices)
-    init_mqtt_server(update_devices_callback)
+    init_mqtt_server(update_devices_callback, devices)
 
 @app.route('/api/toggle-device', methods=['POST'])
 @app.route('/api/control-device', methods=['POST'])
@@ -93,7 +93,7 @@ def get_devices():
 
 @app.route('/')
 def index():
-    read_device()
+    #read_device()
     return render_template('index.html', devices=devices)
 
 def run_app():

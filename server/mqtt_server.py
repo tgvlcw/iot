@@ -5,15 +5,8 @@ import threading
 #broker = "192.168.31.26"
 broker = "127.0.0.1"
 port = 1883
-topics = ["Light", "Fan", "TV", "Sound"]
-
-recv_data = {
-    "Light": None,
-    "Fan": None,
-    "TV": None,
-    "Sound": None
-}
-
+topics = None
+recv_data = None
 server = None
 sending = False
 
@@ -58,8 +51,14 @@ def send_msg(topic, msg):
 def recv_msg(topic, msg):
     return recv_data[topic]
 
-def init_mqtt_server(devices_callback):
+def init_mqtt_server(devices_callback, devices):
     global server
+    global recv_data
+    global topics
+
+    recv_data = {device['name']: device['component'] for device in devices}
+    topics = {device['name'] for device in devices}
+
     server = mqtt.Client()
     server.on_connect = on_connect
     server.on_publish = on_publish
