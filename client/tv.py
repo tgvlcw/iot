@@ -31,8 +31,6 @@ def on_connect(client, userdata, flags, rc):
     client.subscribe(topic)
 
 def on_message(client, userdata, msg):
-    global sending_msg
-
     if sending_msg == True:
         return
 
@@ -89,6 +87,12 @@ def loop_update():
     if status == 'ON':
         read_status('all')
 
+def exit_client():
+    set_device("switch", "OFF")
+    read_status('all')
+    client.loop_stop()
+    client.disconnect()
+
 if __name__ == '__main__':
     client = init_client()
 
@@ -98,3 +102,4 @@ if __name__ == '__main__':
             time.sleep(5)
     except KeyboardInterrupt:
         print("Client shutting down.")
+        exit_client()
