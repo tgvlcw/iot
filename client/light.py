@@ -18,7 +18,8 @@ device = {
 }
 
 def init_client():
-    client = mqtt.Client()
+    print("Starting Light device")
+    client = mqtt.Client(protocol=mqtt.MQTTv5, callback_api_version=mqtt.CallbackAPIVersion.VERSION2)
     client.on_connect = on_connect
     client.on_message = on_message
     client.on_publish = on_publish
@@ -26,7 +27,7 @@ def init_client():
     client.loop_start()
     return client
 
-def on_connect(client, userdata, flags, rc):
+def on_connect(client, userdata, flags, rc, properties=None):
     print("Client connected with result code:", rc)
     client.subscribe(topic)
 
@@ -38,7 +39,7 @@ def on_message(client, userdata, msg):
 
     handle_message(msg.payload.decode())
 
-def on_publish(client, userdata, mid):
+def on_publish(client, userdata, mid, rc=0, properties=None):
     global sending_msg
     sending_msg = False
     #print(f"Message with ID {mid} has been published.")
