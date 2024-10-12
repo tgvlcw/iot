@@ -21,8 +21,6 @@ def on_publish(server, userdata, mid):
     #print(f"Message with ID {mid} has been published, flag: {sending}")
 
 def on_message(server, userdata, msg, devices_callback):
-    global sending
-
     if sending == True:
         return
 
@@ -61,4 +59,8 @@ def init_mqtt_server(devices_callback, devices):
     server.on_message = lambda client, userdata, msg: on_message(client, userdata, msg, devices_callback)
     server.connect(broker, port)
     server.loop_start()
+
+def exit_mqtt_server():
+    server.loop_stop()
+    server.disconnect()
 

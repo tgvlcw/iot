@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, jsonify
-from mqtt_server import init_mqtt_server, send_msg
+from mqtt_server import init_mqtt_server, send_msg, exit_mqtt_server
 import json
 import threading
 
@@ -56,6 +56,10 @@ def init_server():
     device_locks = create_device_locks(devices)
     init_mqtt_server(update_devices_callback, devices)
 
+def exit_server():
+    print("exit_server!!!!!!")
+    exit_mqtt_server()
+
 @app.route('/api/toggle-device', methods=['POST'])
 @app.route('/api/control-device', methods=['POST'])
 def toggle_device():
@@ -81,5 +85,10 @@ def run_app():
     app.run(host='0.0.0.0', port=8000, debug=False)
 
 if __name__ == '__main__':
-    init_server()
-    run_app()
+    try:
+        init_server()
+        run_app()
+    except KeyboardInterrupt:
+        print("Exiting...")
+    finally:
+        exit_server()
