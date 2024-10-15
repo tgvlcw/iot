@@ -109,6 +109,80 @@ const DevicesPage = {
     }
 };
 
+const AirConditionPage = {
+    template: `
+    <div class="air-conditioner-remote">
+        <div class="display">
+            <div class="temperature">{{ temperature }}°C</div>
+            <div class="mode">{{ mode }}</div>
+            <div class="fan-speed">Fan: {{ fanSpeed }}</div>
+            <div class="direction">Direction: {{ direction }}</div>
+            <div v-if="swing" class="swing">Swing On</div>
+            <div v-if="sleep" class="sleep">Sleep Mode On</div>
+            <div v-if="timer" class="timer">Timer: {{ timer }} hours</div>
+        </div>
+        <div class="controls">
+            <button @click="togglePower" :class="{ active: power }">{{ power ? 'OFF' : 'ON' }}</button>
+            <button @click="changeMode">Mode</button>
+            <button @click="changeFanSpeed">Fan</button>
+            <button @click="changeDirection">Direction</button>
+            <button @click="toggleSwing" :class="{ active: swing }">Swing</button>
+            <button @click="increaseTemp">Temp+</button>
+            <button @click="decreaseTemp">Temp-</button>
+            <button @click="setTimer">Timer</button>
+            <button @click="toggleSleep" :class="{ active: sleep }">Sleep</button>
+        </div>
+    </div>
+    `,
+    data() {
+        return {
+            power: false,
+            temperature: 25,
+            mode: 'Cool',
+            fanSpeed: 'Auto',
+            direction: 'Auto',
+            swing: false,
+            sleep: false,
+            timer: 0
+        }
+    },
+    methods: {
+        togglePower() {
+            this.power = !this.power;
+        },
+        changeMode() {
+            const modes = ['Cool', 'Heat', 'Dry', 'Fan'];
+            const currentIndex = modes.indexOf(this.mode);
+            this.mode = modes[(currentIndex + 1) % modes.length];
+        },
+        changeFanSpeed() {
+            const speeds = ['Auto', 'Low', 'Medium', 'High'];
+            const currentIndex = speeds.indexOf(this.fanSpeed);
+            this.fanSpeed = speeds[(currentIndex + 1) % speeds.length];
+        },
+        changeDirection() {
+            const directions = ['Auto', 'Up', 'Middle', 'Down'];
+            const currentIndex = directions.indexOf(this.direction);
+            this.direction = directions[(currentIndex + 1) % directions.length];
+        },
+        toggleSwing() {
+            this.swing = !this.swing;
+        },
+        increaseTemp() {
+            if (this.temperature < 30) this.temperature++;
+        },
+        decreaseTemp() {
+            if (this.temperature > 16) this.temperature--;
+        },
+        setTimer() {
+            this.timer = (this.timer + 1) % 25; // 0-24 hours cycle
+        },
+        toggleSleep() {
+            this.sleep = !this.sleep;
+        }
+    }
+};
+
 const VideoPage = {
     template: '<p>This page is currently empty.</p>'
 };
@@ -130,6 +204,7 @@ new Vue({
     el: '#app',
     components: {
         'devices-page': DevicesPage,
+        'aircondition-page': AirConditionPage,
         'video-page': VideoPage,
         'info-page': InfoPage,
         'about-page': AboutPage
@@ -138,6 +213,7 @@ new Vue({
         devices: initialDevices,
         navItems: [
             { name: 'Devices', page: 'devices' },
+            { name: 'AirCondition', page: 'aircondition' },
             { name: 'Video', page: 'video' },
             { name: 'Info', page: 'info' },
             { name: 'About', page: 'about' }
