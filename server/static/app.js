@@ -123,21 +123,23 @@ const AirConditionPage = {
         </div>
         <div class="controls">
             <div class="control-row1">
-                <button @click="togglePower" :class="{ active: power }">{{ power ? 'OFF' : 'ON' }}</button>
-                <button @click="changeMode">Mode</button>
+                <button @click="togglePower" :class="{ 'btn-controls': true, 'active': power }">
+                    {{ power ? 'OFF' : 'ON' }}
+                </button>
+                <button @click="changeMode" class="btn-controls">Mode</button>
             </div>
             <div class="control-row2">
-                <button @click="changeFanSpeed">Fan</button>
-                <button @click="changeDirection">Direction</button>
-                <button @click="changeSwing">Direction</button>
+                <button @click="changeFanSpeed" class="btn-controls">Fan</button>
+                <button @click="changeDirection" class="btn-controls">Direction</button>
+                <button @click="changeSwing" class="btn-controls">Direction</button>
             </div>
             <div class="control-row3">
-                <button @click="increaseTemp">+</button>
-                <button @click="decreaseTemp">-</button>
+                <button @click="increaseTemp" class="btn-controls">+</button>
+                <button @click="decreaseTemp" class="btn-controls">-</button>
             </div>
             <div class="control-row1">
-                <button @click="setTimer">Timer</button>
-                <button @click="changeSleep">sleep</button>
+                <button @click="setTimer" class="btn-controls">Timer</button>
+                <button @click="changeSleep" class="btn-controls">sleep</button>
             </div>
         </div>
     </div>
