@@ -114,23 +114,31 @@ const AirConditionPage = {
     <div class="air-conditioner-remote">
         <div class="display">
             <div class="temperature">{{ temperature }}°C</div>
-            <div class="mode">{{ mode }}</div>
-            <div class="fan-speed">Fan: {{ fanSpeed }}</div>
-            <div class="direction">Direction: {{ direction }}</div>
-            <div v-if="swing" class="swing">Swing On</div>
-            <div v-if="sleep" class="sleep">Sleep Mode On</div>
-            <div v-if="timer" class="timer">Timer: {{ timer }} hours</div>
+            <div class="mode text">Mode: {{ mode }}</div>
+            <div class="fan-speed text">Fan: {{ fanSpeed }}</div>
+            <div class="direction text">Direction: {{ direction }}</div>
+            <div class="swing text">Swing: {{ swing }}</div>
+            <div class="timer text">Timer: {{ timer }} hours</div>
+            <div class="sleep text">Sleep: {{ sleep }}</div>
         </div>
         <div class="controls">
-            <button @click="togglePower" :class="{ active: power }">{{ power ? 'OFF' : 'ON' }}</button>
-            <button @click="changeMode">Mode</button>
-            <button @click="changeFanSpeed">Fan</button>
-            <button @click="changeDirection">Direction</button>
-            <button @click="toggleSwing" :class="{ active: swing }">Swing</button>
-            <button @click="increaseTemp">Temp+</button>
-            <button @click="decreaseTemp">Temp-</button>
-            <button @click="setTimer">Timer</button>
-            <button @click="toggleSleep" :class="{ active: sleep }">Sleep</button>
+            <div class="control-row1">
+                <button @click="togglePower" :class="{ active: power }">{{ power ? 'OFF' : 'ON' }}</button>
+                <button @click="changeMode">Mode</button>
+            </div>
+            <div class="control-row2">
+                <button @click="changeFanSpeed">Fan</button>
+                <button @click="changeDirection">Direction</button>
+                <button @click="changeSwing">Direction</button>
+            </div>
+            <div class="control-row3">
+                <button @click="increaseTemp">+</button>
+                <button @click="decreaseTemp">-</button>
+            </div>
+            <div class="control-row1">
+                <button @click="setTimer">Timer</button>
+                <button @click="changeSleep">sleep</button>
+            </div>
         </div>
     </div>
     `,
@@ -141,8 +149,8 @@ const AirConditionPage = {
             mode: 'Cool',
             fanSpeed: 'Auto',
             direction: 'Auto',
-            swing: false,
-            sleep: false,
+            swing: 'Auto',
+            sleep: 'OFF',
             timer: 0
         }
     },
@@ -165,8 +173,10 @@ const AirConditionPage = {
             const currentIndex = directions.indexOf(this.direction);
             this.direction = directions[(currentIndex + 1) % directions.length];
         },
-        toggleSwing() {
-            this.swing = !this.swing;
+        changeSwing() {
+            const swings = ['Auto', 'Manual'];
+            const currentIndex = swings.indexOf(this.swing);
+            this.swing = swings[(currentIndex + 1) % swings.length];
         },
         increaseTemp() {
             if (this.temperature < 30) this.temperature++;
@@ -175,10 +185,12 @@ const AirConditionPage = {
             if (this.temperature > 16) this.temperature--;
         },
         setTimer() {
-            this.timer = (this.timer + 1) % 25; // 0-24 hours cycle
+            this.timer = (this.timer + 1) % 13; // 0-12 hours cycle
         },
-        toggleSleep() {
-            this.sleep = !this.sleep;
+        changeSleep() {
+            const sleeps = ['OFF', 'ON'];
+            const currentIndex = sleeps.indexOf(this.sleep);
+            this.sleep = sleeps[(currentIndex + 1) % sleeps.length];
         }
     }
 };
@@ -218,7 +230,7 @@ new Vue({
             { name: 'Info', page: 'info' },
             { name: 'About', page: 'about' }
         ],
-        currentPage: 'devices' 
+        currentPage: 'aircondition' 
     },
     computed: {
         currentPageComponent() {

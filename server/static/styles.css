@@ -94,8 +94,8 @@ main {
 }
 
 .air-conditioner-remote {
-    width: 350px;
-    height: 450px;
+    width: 280px;
+    height: 550px;
     background-color: #f0f0f0;
     border-radius: 20px;
     padding: 20px;
@@ -103,6 +103,7 @@ main {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    margin: 0 150px;
 }
 
 .display {
@@ -111,18 +112,46 @@ main {
     padding: 20px;
     border-radius: 10px;
     text-align: center;
-    height: 200px;
+    height: 280px;
 }
 
 .temperature {
     font-size: 60px;
-    margin-bottom: 15px;
+    margin-bottom: 50px;
 }
 
 .controls {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 5px;
+}
+
+.control-row1 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    justify-content: center;
+    gap: 10px;
+}
+
+.control-row2 {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
+    justify-content: center;
     gap: 10px;
+}
+
+.control-row3 {
+    font-size: 20px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    justify-content: center;
+    gap: 10px;
+}
+
+.text {
+    font-size: 12px;
+    text-align: left;
 }
 
 button {
