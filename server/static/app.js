@@ -113,33 +113,35 @@ const AirConditionPage = {
     template: `
     <div class="air-conditioner-remote">
         <div class="display">
-            <div class="temperature">{{ temperature }}°C</div>
-            <div class="mode text">Mode: {{ mode }}</div>
-            <div class="fan-speed text">Fan: {{ fanSpeed }}</div>
-            <div class="direction text">Direction: {{ direction }}</div>
-            <div class="swing text">Swing: {{ swing }}</div>
-            <div class="timer text">Timer: {{ timer }} hours</div>
-            <div class="sleep text">Sleep: {{ sleep }}</div>
+            <template v-if="power">
+                <div class="temperature">{{ temperature }}°C</div>
+                <div class="mode text">Mode: {{ mode }}</div>
+                <div class="fan-speed text">Fan: {{ fanSpeed }}</div>
+                <div class="direction text">Direction: {{ direction }}</div>
+                <div class="swing text">Swing: {{ swing }}</div>
+                <div class="timer text">Timer: {{ timer > 0 ? timer + ' hours' : 'OFF' }}</div>
+                <div class="sleep text">Sleep: {{ sleep }}</div>
+            </template>
         </div>
         <div class="controls">
             <div class="control-row1">
                 <button @click="togglePower" :class="{ 'btn-controls': true, 'active': power }">
                     {{ power ? 'OFF' : 'ON' }}
                 </button>
-                <button @click="changeMode" class="btn-controls">Mode</button>
+                <button @click="changeMode" :disabled="!power" class="btn-controls">Mode</button>
             </div>
             <div class="control-row2">
-                <button @click="changeFanSpeed" class="btn-controls">Fan</button>
-                <button @click="changeDirection" class="btn-controls">Direction</button>
-                <button @click="changeSwing" class="btn-controls">Direction</button>
+                <button @click="changeFanSpeed" :disabled="!power" class="btn-controls">Fan</button>
+                <button @click="changeDirection" :disabled="!power" class="btn-controls">Direction</button>
+                <button @click="changeSwing" :disabled="!power" class="btn-controls">Direction</button>
             </div>
             <div class="control-row3">
-                <button @click="increaseTemp" class="btn-controls">+</button>
-                <button @click="decreaseTemp" class="btn-controls">-</button>
+                <button @click="increaseTemp" :disabled="!power" class="btn-controls">+</button>
+                <button @click="decreaseTemp" :disabled="!power" class="btn-controls">-</button>
             </div>
             <div class="control-row1">
-                <button @click="setTimer" class="btn-controls">Timer</button>
-                <button @click="changeSleep" class="btn-controls">sleep</button>
+                <button @click="setTimer" :disabled="!power" class="btn-controls">Timer</button>
+                <button @click="changeSleep" :disabled="!power" class="btn-controls">sleep</button>
             </div>
         </div>
     </div>
@@ -159,40 +161,62 @@ const AirConditionPage = {
     methods: {
         togglePower() {
             this.power = !this.power;
+            if (!this.power) {
+                // Reset all settings when turned off
+                this.temperature = 25;
+                this.mode = 'Cool';
+                this.fanSpeed = 'Auto';
+                this.direction = 'Auto';
+                this.swing = 'Auto';
+                this.sleep = 'OFF';
+                this.timer = 0;
+            }
         },
         changeMode() {
-            const modes = ['Cool', 'Heat', 'Dry', 'Fan'];
-            const currentIndex = modes.indexOf(this.mode);
-            this.mode = modes[(currentIndex + 1) % modes.length];
+            if (this.power) {
+                const modes = ['Cool', 'Heat', 'Dry', 'Fan'];
+                const currentIndex = modes.indexOf(this.mode);
+                this.mode = modes[(currentIndex + 1) % modes.length];
+            }
         },
         changeFanSpeed() {
-            const speeds = ['Auto', 'Low', 'Medium', 'High'];
-            const currentIndex = speeds.indexOf(this.fanSpeed);
-            this.fanSpeed = speeds[(currentIndex + 1) % speeds.length];
+            if (this.power) {
+                const speeds = ['Auto', 'Low', 'Medium', 'High'];
+                const currentIndex = speeds.indexOf(this.fanSpeed);
+                this.fanSpeed = speeds[(currentIndex + 1) % speeds.length];
+            }
         },
         changeDirection() {
-            const directions = ['Auto', 'Up', 'Middle', 'Down'];
-            const currentIndex = directions.indexOf(this.direction);
-            this.direction = directions[(currentIndex + 1) % directions.length];
+            if (this.power) {
+                const directions = ['Auto', 'Up', 'Middle', 'Down'];
+                const currentIndex = directions.indexOf(this.direction);
+                this.direction = directions[(currentIndex + 1) % directions.length];
+            }
         },
         changeSwing() {
-            const swings = ['Auto', 'Manual'];
-            const currentIndex = swings.indexOf(this.swing);
-            this.swing = swings[(currentIndex + 1) % swings.length];
+            if (this.power) {
+                const swings = ['Auto', 'Manual'];
+                const currentIndex = swings.indexOf(this.swing);
+                this.swing = swings[(currentIndex + 1) % swings.length];
+            }
         },
         increaseTemp() {
-            if (this.temperature < 30) this.temperature++;
+            if (this.power && this.temperature < 30) this.temperature++;
         },
         decreaseTemp() {
-            if (this.temperature > 16) this.temperature--;
+            if (this.power && this.temperature > 16) this.temperature--;
         },
         setTimer() {
-            this.timer = (this.timer + 1) % 13; // 0-12 hours cycle
+            if (this.power) {
+                this.timer = (this.timer + 1) % 13; // 0-12 hours cycle
+            }
         },
         changeSleep() {
-            const sleeps = ['OFF', 'ON'];
-            const currentIndex = sleeps.indexOf(this.sleep);
-            this.sleep = sleeps[(currentIndex + 1) % sleeps.length];
+            if (this.power) {
+                const sleeps = ['OFF', 'ON'];
+                const currentIndex = sleeps.indexOf(this.sleep);
+                this.sleep = sleeps[(currentIndex + 1) % sleeps.length];
+            }
         }
     }
 };
