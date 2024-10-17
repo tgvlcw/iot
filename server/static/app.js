@@ -134,7 +134,7 @@ const AirConditionPage = {
             <div class="control-row2">
                 <button @click="changeFanSpeed" :disabled="!power" class="btn-controls">Fan</button>
                 <button @click="changeDirection" :disabled="!power" class="btn-controls">Direction</button>
-                <button @click="changeSwing" :disabled="!power" class="btn-controls">Direction</button>
+                <button @click="changeSwing" :disabled="!power" class="btn-controls">Swing</button>
             </div>
             <div class="control-row3">
                 <button @click="increaseTemp" :disabled="!power" class="btn-controls">+</button>
