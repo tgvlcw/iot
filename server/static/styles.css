@@ -93,7 +93,12 @@ main {
     line-height: 1.42857;
 }
 
-.air-conditioner-remote {
+.air-conditioner-remotes {
+    display: flex;
+    padding: 20px;
+}
+
+.ac-remote {
     width: 280px;
     height: 550px;
     background-color: #f0f0f0;
@@ -104,6 +109,17 @@ main {
     flex-direction: column;
     justify-content: space-between;
     margin-left: 100px;
+}
+
+.ac-remote1 {
+    width: 550px;
+    height: 280px;
+    min-width: 550px;
+    min-height: 280px;
+    background-color: #f0f0f0;
+    border-radius: 20px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    margin: 80px 0 0 150px;
 }
 
 .display {

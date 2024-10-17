@@ -111,7 +111,8 @@ const DevicesPage = {
 
 const AirConditionPage = {
     template: `
-    <div class="air-conditioner-remote">
+    <div class="air-conditioner-remotes">
+    <div class="ac-remote">
         <div class="display">
             <template v-if="power">
                 <div class="temperature">{{ temperature }}°C</div>
@@ -144,6 +145,8 @@ const AirConditionPage = {
                 <button @click="changeSleep" :disabled="!power" class="btn-controls">sleep</button>
             </div>
         </div>
+    </div>
+
     </div>
     `,
     data() {
