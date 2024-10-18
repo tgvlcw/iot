@@ -13,8 +13,8 @@ const DevicesPage = {
     template: `
         <div>
             <div class="row">
-				<div class="col-xl-6 col-lg-6 col-md-12 mb-4" v-for="device in devices" :key="device.id">
-					<div class="card">
+                <div class="col-xl-6 col-lg-6 col-md-12 mb-4" v-for="device in devices" :key="device.id">
+                    <div class="card">
                         <div class="card-body">
                             <h5 class="card-title">{{ device.name }}</h5>
                             <p class="card-text">Status: {{ device.component.switch }}</p>
@@ -259,7 +259,8 @@ new Vue({
             { name: 'Info', page: 'info' },
             { name: 'About', page: 'about' }
         ],
-        currentPage: 'aircondition' 
+        //currentPage: 'aircondition' 
+        currentPage: 'devices' 
     },
     computed: {
         currentPageComponent() {
